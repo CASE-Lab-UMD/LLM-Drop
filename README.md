@@ -1,3 +1,35 @@
+## LLM Block Dropping
+
+
+#### Run Block Dropping
+
+```bash
+bash ./scripts/prune/mixtral_block_drop.sh \
+    --stage pt \
+    --do_train \
+    --model_name_or_path path_to_llama_model \
+    --dataset wiki_demo \
+    --finetuning_type lora \
+    --lora_target q_proj,v_proj \
+    --output_dir path_to_pt_checkpoint \
+    --overwrite_cache \
+    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 4 \
+    --lr_scheduler_type cosine \
+    --logging_steps 10 \
+    --save_steps 1000 \
+    --learning_rate 5e-5 \
+    --num_train_epochs 3.0 \
+    --plot_loss \
+    --fp16
+```
+
+#### Details of Dropping
+
+Please refer to /src/llmtuner/train/prune/block_drop.py
+
+<!-- 
+
 ![# LLaMA Factory](assets/logo.png)
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/hiyouga/LLaMA-Factory?style=social)](https://github.com/hiyouga/LLaMA-Factory/stargazers)
@@ -623,4 +655,4 @@ This repo benefits from [PEFT](https://github.com/huggingface/peft), [QLoRA](htt
 
 ## Star History
 
-![Star History Chart](https://api.star-history.com/svg?repos=hiyouga/LLaMA-Factory&type=Date)
+![Star History Chart](https://api.star-history.com/svg?repos=hiyouga/LLaMA-Factory&type=Date) -->
