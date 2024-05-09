@@ -4,24 +4,7 @@
 #### Run Block Dropping
 
 ```bash
-bash ./scripts/prune/mixtral_block_drop.sh \
-    --stage pt \
-    --do_train \
-    --model_name_or_path path_to_llama_model \
-    --dataset wiki_demo \
-    --finetuning_type lora \
-    --lora_target q_proj,v_proj \
-    --output_dir path_to_pt_checkpoint \
-    --overwrite_cache \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 4 \
-    --lr_scheduler_type cosine \
-    --logging_steps 10 \
-    --save_steps 1000 \
-    --learning_rate 5e-5 \
-    --num_train_epochs 3.0 \
-    --plot_loss \
-    --fp16
+bash ./scripts/prune/mixtral_block_drop.sh 
 ```
 
 #### Details of Dropping
