@@ -1,8 +1,8 @@
 import torch
 from torch import nn as nn, cuda
 
-from llmtuner.model.deepseek.modeling_deepseek import MoEGate
-from llmtuner.model.pruning_modules import ExpertLinear
+# from llmtuner.model.deepseek.modeling_deepseek import MoEGate
+# from llmtuner.model.pruning_modules import ExpertLinear
 
 
 def print_gpu_memory(accelerator):
@@ -40,26 +40,30 @@ def find_modules(module, layers=[], name='') -> dict:
     return res
 
 
-def find_moe_expert_linears(module) -> dict:
+# def find_moe_expert_linears(module) -> dict:
+#     # 🔍 find only the expert weights
+#     res = find_modules(module, [ExpertLinear])
+#     return res
+
+def find_linears(module) -> dict:
     # 🔍 find only the expert weights
-    res = find_modules(module, [ExpertLinear])
+    res = find_modules(module, [nn.Linear])
     return res
 
+# def find_moe_gates(module) -> dict:
+#     # 🔍 find only the gate network
+#     res = find_modules(module, [nn.Linear, MoEGate])  # MoEGate for DeepSeek
+#     for key in list(res.keys()):
+#         if ".gate." not in key:
+#             res.pop(key)
+#     return res
 
-def find_moe_gates(module) -> dict:
-    # 🔍 find only the gate network
-    res = find_modules(module, [nn.Linear, MoEGate])  # MoEGate for DeepSeek
-    for key in list(res.keys()):
-        if ".gate." not in key:
-            res.pop(key)
-    return res
 
-
-def find_moe_expert_linears_and_gate(module) -> dict:
-    # 🔍 find the expert weights and gate weights
-    res_experts = find_moe_expert_linears(module)
-    res_gates = find_moe_gates(module)
-    return {**res_experts, **res_gates}  # merge the two dict
+# def find_moe_expert_linears_and_gate(module) -> dict:
+#     # 🔍 find the expert weights and gate weights
+#     res_experts = find_moe_expert_linears(module)
+#     res_gates = find_moe_gates(module)
+#     return {**res_experts, **res_gates}  # merge the two dict
 
 
 @torch.no_grad()

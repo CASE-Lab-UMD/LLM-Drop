@@ -1,6 +1,6 @@
 
 import os
-import sys
+# import sys
 
 from copy import deepcopy
 from typing import TYPE_CHECKING, List, Optional
@@ -12,13 +12,13 @@ from torch.utils.data import DataLoader
 from global_utils.io import load_json, save_json
 from transformers import DataCollatorForSeq2Seq, DataCollatorForLanguageModeling, DataCollatorWithPadding
 from .block_drop import consecutive_block_dropping, discrete_block_dropping, post_block_drop
-from .decompose import decompose_moe
-from .expert_drop import layerwise_pruning, progressive_pruning, dynamic_skipping, global_pruning, post_experts_drop
-from .gate_remap import gate_remap
+# from .decompose import decompose_moe
+# from .expert_drop import layerwise_pruning, progressive_pruning, dynamic_skipping, global_pruning, post_experts_drop
+# from .gate_remap import gate_remap
 from .io import save_sparse_model, save_update_state_dict, save_decomposed_model, save_expert_dropped_config, save_block_dropped_config, save_layer_dropped_config
 from .layer_drop import discrete_layer_dropping, post_layers_drop
-from ..dpo.collator import DPODataCollatorWithPadding
-from ..rm.collator import PairwiseDataCollatorWithPadding
+# from ..dpo.collator import DPODataCollatorWithPadding
+# from ..rm.collator import PairwiseDataCollatorWithPadding
 from ...data import get_dataset
 from ...extras.constants import IGNORE_INDEX
 from ...model import load_model_and_tokenizer
@@ -31,12 +31,12 @@ if TYPE_CHECKING:
 
 DATA_AWARE_PRUNING_METHODS = ("wanda", "sparsegpt", "gradient-first", "gradient-zeroth", "expert_drop", "block_drop", "layer_drop")
 
-EXPERT_DROP_METHODS_FUNC = {
-    'layerwise_pruning': layerwise_pruning,
-    'global_pruning': global_pruning,
-    'progressive_pruning': progressive_pruning,
-    'dynamic_skipping': dynamic_skipping,
-}
+# EXPERT_DROP_METHODS_FUNC = {
+#     'layerwise_pruning': layerwise_pruning,
+#     'global_pruning': global_pruning,
+#     'progressive_pruning': progressive_pruning,
+#     'dynamic_skipping': dynamic_skipping,
+# }
 
 LAYER_DROP_METHODS_FUNC = {
     'discrete': discrete_layer_dropping,
@@ -67,12 +67,12 @@ def run_prune(
     # 🔍 model & tokenizer
     model, tokenizer = load_model_and_tokenizer(model_args, finetuning_args, training_args.do_train)
 
-    if pruning_args.prune_method == "expert_drop" and pruning_args.expert_drop_method == "post_dropping":
-        assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
-        config = load_json(os.path.join(pruning_args.prune_model_save_path, "config.json"))
-        accelerator.wait_for_everyone()
-        post_experts_drop(pruning_args.prune_model_save_path, model, tokenizer, config, accelerator, preserve_gate=pruning_args.preserve_gate)
-        exit()
+    # if pruning_args.prune_method == "expert_drop" and pruning_args.expert_drop_method == "post_dropping":
+    #     assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
+    #     config = load_json(os.path.join(pruning_args.prune_model_save_path, "config.json"))
+    #     accelerator.wait_for_everyone()
+    #     post_experts_drop(pruning_args.prune_model_save_path, model, tokenizer, config, accelerator, preserve_gate=pruning_args.preserve_gate)
+    #     exit()
 
     if pruning_args.prune_method == "layer_drop" and pruning_args.layer_drop_method == "post_dropping":
         assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
@@ -155,10 +155,10 @@ def run_prune(
         raise NotImplementedError
     elif pruning_args.prune_method == "magnitude":
         update_state_dict = prune_magnitude(pruning_args, model, accelerator, prune_n=prune_n, prune_m=prune_m)  # Data-independent
-    elif pruning_args.prune_method == "decompose_moe":
-        update_state_dict = decompose_moe(pruning_args, model, accelerator)  # Data-independent
-    elif pruning_args.prune_method == "expert_drop":
-        EXPERT_DROP_METHODS_FUNC[pruning_args.expert_drop_method](pruning_args, model, dataloader, accelerator, num_samples_each_device)
+    # elif pruning_args.prune_method == "decompose_moe":
+    #     update_state_dict = decompose_moe(pruning_args, model, accelerator)  # Data-independent
+    # elif pruning_args.prune_method == "expert_drop":
+    #     EXPERT_DROP_METHODS_FUNC[pruning_args.expert_drop_method](pruning_args, model, dataloader, accelerator, num_samples_each_device)
     elif pruning_args.prune_method == "layer_drop":
         dropped_layer_list = LAYER_DROP_METHODS_FUNC[pruning_args.layer_drop_method](pruning_args, model, dataloader, accelerator, num_samples_each_device)
     elif pruning_args.prune_method == "block_drop":
@@ -170,15 +170,15 @@ def run_prune(
     accelerator.print(f"model: {model}")
 
     if pruning_args.prune_model_save_path is not None:
-        if pruning_args.prune_method == "decompose_moe":
-            # 🔍 Set config for low-rank decomposition.
-            setattr(accelerator.unwrap_model(model).config, "decomposed", True)
-            setattr(accelerator.unwrap_model(model).config, "has_sparse", pruning_args.has_sparse)
-            save_decomposed_model(pruning_args.prune_model_save_path, model, tokenizer, accelerator, update_state_dict)
-        elif pruning_args.prune_method == "expert_drop":
-            # 🔍 only return the idx of remaining experts.
-            save_expert_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator)
-        elif pruning_args.prune_method == "layer_drop":
+        # if pruning_args.prune_method == "decompose_moe":
+        #     # 🔍 Set config for low-rank decomposition.
+        #     setattr(accelerator.unwrap_model(model).config, "decomposed", True)
+        #     setattr(accelerator.unwrap_model(model).config, "has_sparse", pruning_args.has_sparse)
+        #     save_decomposed_model(pruning_args.prune_model_save_path, model, tokenizer, accelerator, update_state_dict)
+        # elif pruning_args.prune_method == "expert_drop":
+        #     # 🔍 only return the idx of remaining experts.
+        #     save_expert_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator)
+        if pruning_args.prune_method == "layer_drop":
             save_layer_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
         elif pruning_args.prune_method == "block_drop":
             save_block_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)

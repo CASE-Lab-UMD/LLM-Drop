@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from global_utils.io import create_dir
-from llmtuner.model.deepseek.modeling_deepseek import DeepseekPreTrainedModel
+# from llmtuner.model.deepseek.modeling_deepseek import DeepseekPreTrainedModel
 from llmtuner.train.prune.utils import prepare_calibration_input, print_gpu_memory
 from llmtuner.train.prune.wrapper import HiddenStatesRecordWrapper
 from transformers.models.mixtral.modeling_mixtral import MixtralForCausalLM, MixtralPreTrainedModel
@@ -21,8 +21,9 @@ from transformers.models.mixtral.modeling_mixtral import MixtralForCausalLM, Mix
 logger = logging.getLogger(__name__)
 
 
+# TODO this function seems not specific to MoE, so you can start with it.
 @no_grad()
-def get_block_similarities(model: MixtralForCausalLM, dataloader: DataLoader, accelerator: Accelerator, num_samples: int, cache_file=None):
+def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int, cache_file=None):
     device = accelerator.device
 
     if cache_file is not None and os.path.exists(cache_file):
@@ -41,11 +42,12 @@ def get_block_similarities(model: MixtralForCausalLM, dataloader: DataLoader, ac
         inputs, outputs, attention_mask, position_ids = prepare_calibration_input(unwrapped_model, dataloader, num_samples)  # 🔍
 
         # 🔍 Get MoE layer ids
+        # TODO change for your models. It seems that "config.num_hidden_layers" is OK for many models.
         if isinstance(unwrapped_model, MixtralPreTrainedModel):
             num_layers = unwrapped_model.config.num_hidden_layers
-        elif isinstance(unwrapped_model, DeepseekPreTrainedModel):
-            num_layers = unwrapped_model.config.num_hidden_layers
-
+        # elif isinstance(unwrapped_model, DeepseekPreTrainedModel):
+        #     num_layers = unwrapped_model.config.num_hidden_layers
+        num_layers = unwrapped_model.config.num_hidden_layers
         # 🔍 Initialize the similarities.
         # Row: each layer
         # Column: similarity to the next n layer
@@ -137,7 +139,7 @@ def consecutive_block_dropping(args: Namespace, model: MixtralForCausalLM, datal
     return dropped_layer_list
 
 
-def discrete_block_dropping(args: Namespace, model: MixtralForCausalLM, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
+def discrete_block_dropping(args: Namespace, model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
     """
     🔍 Prune blocks in a discrete order.
     E.g., [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] -> [0, 2, 6, 8, 9]
@@ -189,17 +191,24 @@ def post_block_drop(prune_model_save_path, model, tokenizer, layer_id_mapping, a
         preserved_layers = sorted([int(s) for s in layer_id_mapping.keys()])
         accelerator.print("preserved_layers", preserved_layers)
 
-        if isinstance(model, MixtralPreTrainedModel):
-            if hasattr(new_config, "layer_experts_idx"):
-                new_config.layer_experts_idx = [model.config.layer_experts_idx[i] for i in preserved_layers]
-            if isinstance(new_config.num_local_experts, list):
-                new_config.num_local_experts = [model.config.num_local_experts[i] for i in preserved_layers]
+        # TODO ignore this, since it is for MoE models.
+        # if isinstance(model, MixtralPreTrainedModel):
+        #     if hasattr(new_config, "layer_experts_idx"):
+        #         new_config.layer_experts_idx = [model.config.layer_experts_idx[i] for i in preserved_layers]
+        #     if isinstance(new_config.num_local_experts, list):
+        #         new_config.num_local_experts = [model.config.num_local_experts[i] for i in preserved_layers]
 
-        elif isinstance(model, DeepseekPreTrainedModel):
-            if hasattr(new_config, "layer_experts_idx"):
-                new_config.layer_experts_idx = [model.config.layer_experts_idx[i] for i in preserved_layers]
-            if isinstance(new_config.n_routed_experts, list):
-                new_config.n_routed_experts = [model.config.n_routed_experts[i] for i in preserved_layers]
+        # if isinstance(model, MixtralPreTrainedModel):
+        #     if hasattr(new_config, "layer_experts_idx"):
+        #         new_config.layer_experts_idx = [model.config.layer_experts_idx[i] for i in preserved_layers]
+        #     if isinstance(new_config.num_local_experts, list):
+        #         new_config.num_local_experts = [model.config.num_local_experts[i] for i in preserved_layers]
+
+        # elif isinstance(model, DeepseekPreTrainedModel):
+        #     if hasattr(new_config, "layer_experts_idx"):
+        #         new_config.layer_experts_idx = [model.config.layer_experts_idx[i] for i in preserved_layers]
+        #     if isinstance(new_config.n_routed_experts, list):
+        #         new_config.n_routed_experts = [model.config.n_routed_experts[i] for i in preserved_layers]
         accelerator.print("new_config", new_config)
 
         # Model
