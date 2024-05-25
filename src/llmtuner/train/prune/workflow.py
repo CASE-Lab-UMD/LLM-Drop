@@ -1,4 +1,7 @@
+
 import os
+import sys
+
 from copy import deepcopy
 from typing import TYPE_CHECKING, List, Optional
 
@@ -12,7 +15,7 @@ from .block_drop import consecutive_block_dropping, discrete_block_dropping, pos
 from .decompose import decompose_moe
 from .expert_drop import layerwise_pruning, progressive_pruning, dynamic_skipping, global_pruning, post_experts_drop
 from .gate_remap import gate_remap
-from .io import save_sparse_model, save_update_state_dict, save_decomposed_model, save_expert_dropped_model, save_block_dropped_model, save_layer_dropped_model
+from .io import save_sparse_model, save_update_state_dict, save_decomposed_model, save_expert_dropped_config, save_block_dropped_config, save_layer_dropped_config
 from .layer_drop import discrete_layer_dropping, post_layers_drop
 from ..dpo.collator import DPODataCollatorWithPadding
 from ..rm.collator import PairwiseDataCollatorWithPadding
@@ -21,6 +24,7 @@ from ...extras.constants import IGNORE_INDEX
 from ...model import load_model_and_tokenizer
 from ...train.prune.prune import prune_magnitude, prune_sparsegpt, prune_wanda
 
+            
 if TYPE_CHECKING:
     from transformers import Seq2SeqTrainingArguments, TrainerCallback
     from ...hparams import DataArguments, FinetuningArguments, ModelArguments, PruningArguments
@@ -64,21 +68,20 @@ def run_prune(
     model, tokenizer = load_model_and_tokenizer(model_args, finetuning_args, training_args.do_train)
 
     if pruning_args.prune_method == "expert_drop" and pruning_args.expert_drop_method == "post_dropping":
+        assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
         config = load_json(os.path.join(pruning_args.prune_model_save_path, "config.json"))
-        post_experts_drop(model, config["layer_experts_idx"], accelerator)
-        model.save_pretrained(pruning_args.prune_model_save_path)
-        tokenizer.save_pretrained(pruning_args.prune_model_save_path)
-        save_json(config, os.path.join(pruning_args.prune_model_save_path, "config.json"), indent=2)
+        accelerator.wait_for_everyone()
+        post_experts_drop(pruning_args.prune_model_save_path, model, tokenizer, config, accelerator, preserve_gate=pruning_args.preserve_gate)
         exit()
 
     if pruning_args.prune_method == "layer_drop" and pruning_args.layer_drop_method == "post_dropping":
+        assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
         reserved_layer_list = load_json(os.path.join(pruning_args.prune_model_save_path, "reserved_layers.json"))
-        post_layers_drop(model, reserved_layer_list, accelerator)
-        model.save_pretrained(pruning_args.prune_model_save_path)
-        tokenizer.save_pretrained(pruning_args.prune_model_save_path)
+        post_layers_drop(pruning_args.prune_model_save_path, model, tokenizer, reserved_layer_list, accelerator)
         exit()
 
     if pruning_args.prune_method == "block_drop" and pruning_args.block_drop_method == "post_dropping":
+        assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
         layer_id_mapping = load_json(os.path.join(pruning_args.prune_model_save_path, "layer_mapping.json"))
         post_block_drop(pruning_args.prune_model_save_path, model, tokenizer, layer_id_mapping, accelerator)
         exit()
@@ -127,8 +130,8 @@ def run_prune(
         accelerator.print("Number of used samples per device:", num_samples_each_device)
 
     else:  # use no additional data for pruning, can be done on 1 GPU
-        if AcceleratorState().deepspeed_plugin is not None:
-            raise EnvironmentError("Data-independent pruning can only be done without DeepSpeed environment!")
+        if (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) or (os.environ.get("ACCELERATE_USE_FSDP", "false")):
+            raise EnvironmentError("Data-independent pruning can only be done without DeepSpeed / FSDP environment!")
         print("Preparing model...")
         model = accelerator.prepare([model], device_placement=[False])[0]  # 🔍 Prepare model
 
@@ -160,7 +163,6 @@ def run_prune(
         dropped_layer_list = LAYER_DROP_METHODS_FUNC[pruning_args.layer_drop_method](pruning_args, model, dataloader, accelerator, num_samples_each_device)
     elif pruning_args.prune_method == "block_drop":
         dropped_layer_list = BLOCK_DROP_METHODS_FUNC[pruning_args.block_drop_method](pruning_args, model, dataloader, accelerator, num_samples_each_device)
-
     else:
         raise NotImplementedError
     #######################################################################################################
@@ -175,11 +177,11 @@ def run_prune(
             save_decomposed_model(pruning_args.prune_model_save_path, model, tokenizer, accelerator, update_state_dict)
         elif pruning_args.prune_method == "expert_drop":
             # 🔍 only return the idx of remaining experts.
-            save_expert_dropped_model(pruning_args.prune_model_save_path, model, tokenizer, accelerator)
+            save_expert_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator)
         elif pruning_args.prune_method == "layer_drop":
-            save_layer_dropped_model(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
+            save_layer_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
         elif pruning_args.prune_method == "block_drop":
-            save_block_dropped_model(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
+            save_block_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
         else:
             # 🔍 Save sparse model to disk
             save_sparse_model(pruning_args.prune_model_save_path, model, tokenizer, accelerator, update_state_dict, check_sparsity=True)

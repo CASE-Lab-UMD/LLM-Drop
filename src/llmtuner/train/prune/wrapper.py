@@ -7,7 +7,7 @@ from torch import nn as nn
 
 import transformers
 from llmtuner.model.deepseek.modeling_deepseek import MoEGate
-from transformers.models.mixtral.modeling_mixtral import ExpertLinear, MixtralSparseMoeBlock
+from transformers.models.mixtral.modeling_mixtral import ExpertLinear, MixtralSparseMoeBlock 
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +17,9 @@ def measure_delta_top2(scores):
     delta = sorted_scores[1] / sorted_scores[0]
     print(f"sorted_scores:{sorted_scores}, sorted_scores[0]:{sorted_scores[0]}, sorted_scores[1]:{sorted_scores[1]}, delta:{delta}")
     return float(delta.data)
+
+
+"""For pruning"""
 
 
 class WandaWrapper:
@@ -48,7 +51,7 @@ class WandaWrapper:
         # self.score_memery += routing_scores.numel().clone().float()  # add the token loads
 
     def add_batch(self, input, output, routing_scores=None):
-        # 🔍 rescale with scores
+        # 🔍 rescale inputs with scores
         if isinstance(self.layer, ExpertLinear):
             if routing_scores is not None:
                 if self.multiply_score:
@@ -113,7 +116,6 @@ class SparseGPTWrapper:
             self.weight = self.layer.weight.data.clone().cpu()
             self.rows = self.weight.shape[0]
             self.columns = self.weight.shape[1]
-            # print(f"record {self.layer_name}, {self.weight.data.shape}")
 
         if len(input.shape) == 2:
             input = input.unsqueeze(0)  # shape(batch_size, seq_len, hidden_size)
@@ -137,19 +139,23 @@ class SparseGPTWrapper:
 """For recording weights"""
 
 
-class InputStatesRecordWrapper:
-    def __init__(self, layer, layer_name="none", record_output=False):
+class HiddenStatesRecordWrapper:
+    def __init__(self, layer, layer_name="none", record_input=True, record_output=True):
         self.layer = layer
         self.layer_name = layer_name
-        self.hidden_states = []
 
+        self.record_input = record_input
         self.record_output = record_output
+
+        if record_input:
+            self.input_hidden_states = []
         if record_output:
             self.output_hidden_states = []
 
     def record(self, input, output):
         # input: (1, seq_len, hidden_size)
-        self.hidden_states.append(input.squeeze(0).clone().cpu())
+        if self.record_input:
+            self.input_hidden_states.append(input.squeeze(0).clone().cpu())
         if self.record_output:
             self.output_hidden_states.append(output.squeeze(0).clone().cpu())
 
@@ -244,20 +250,6 @@ class DeepseekExpertDropWrapper:
             self.scores += routing_weights.float().sum(0) / self.nsamples  # update mean values by adding values from new samples
 
 
-"""For layer drop"""
-
-
-class MixtralLayerDropWrapper:
-    def __init__(self, layer: MixtralSparseMoeBlock):
-        self.layer = layer
-        self.hidden_states = []
-        self.output_hidden_states = []
-
-    def add_batch(self, input, output):
-        self.hidden_states.append(input.squeeze(0).clone().cpu())
-        self.output_hidden_states.append(output.squeeze(0).clone().cpu())
-
-
 """For dynamic skip"""
 
 
@@ -332,6 +324,9 @@ class DynamicSkippingMixtralSparseMoeBlockWrapper(nn.Module):
         final_hidden_states = final_hidden_states.reshape(
             batch_size, sequence_length, hidden_dim)
         return final_hidden_states, router_logits
+
+
+"""For gate remapping"""
 
 
 class GateRemapWrapper:
