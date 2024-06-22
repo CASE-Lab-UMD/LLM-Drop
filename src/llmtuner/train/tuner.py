@@ -2,12 +2,12 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 import torch
 from transformers import PreTrainedModel
-from .dpo import run_dpo
-from .ppo import run_ppo
-from .prune import run_prune,run_prune_remap_gate
-from .pt import run_pt
-from .rm import run_rm
-from .sft import run_sft
+# from .dpo import run_dpo
+# from .ppo import run_ppo
+from .prune.workflow import run_prune
+# from .pt import run_pt
+# from .rm import run_rm
+# from .sft import run_sft
 from ..extras.callbacks import LogCallback
 from ..extras.logging import get_logger
 from ..hparams import get_infer_args, get_train_args, get_train_sparse_args
@@ -25,23 +25,24 @@ def run_exp(args: Optional[Dict[str, Any]] = None, callbacks: Optional[List["Tra
     # model_args, data_args, training_args, finetuning_args, generating_args = get_train_args(args)
     model_args, data_args, training_args, finetuning_args, generating_args, pruning_args = get_train_sparse_args(args)
     callbacks = [LogCallback()] if callbacks is None else callbacks
-
-    if finetuning_args.stage == "pt":
-        run_pt(model_args, data_args, training_args, finetuning_args, callbacks)
-    elif finetuning_args.stage == "sft":
-        run_sft(model_args, data_args, training_args, finetuning_args, generating_args, callbacks)
-    elif finetuning_args.stage == "rm":
-        run_rm(model_args, data_args, training_args, finetuning_args, callbacks)
-    elif finetuning_args.stage == "ppo":
-        run_ppo(model_args, data_args, training_args, finetuning_args, generating_args, callbacks)
-    elif finetuning_args.stage == "dpo":
-        run_dpo(model_args, data_args, training_args, finetuning_args, callbacks)
-    elif finetuning_args.stage == "prune":  # 🔍
+    if finetuning_args.stage == "prune":  # 🔍  
         run_prune(model_args, data_args, training_args, finetuning_args, pruning_args, callbacks)
-    elif finetuning_args.stage == "remap_gate":  # 🔍
-        run_prune_remap_gate(model_args, data_args, training_args, finetuning_args, pruning_args, callbacks)
-    else:
-        raise ValueError("Unknown task.")
+    # if finetuning_args.stage == "pt":
+    #     run_pt(model_args, data_args, training_args, finetuning_args, callbacks)
+    # elif finetuning_args.stage == "sft":
+    #     run_sft(model_args, data_args, training_args, finetuning_args, generating_args, callbacks)
+    # elif finetuning_args.stage == "rm":
+    #     run_rm(model_args, data_args, training_args, finetuning_args, callbacks)
+    # elif finetuning_args.stage == "ppo":
+    #     run_ppo(model_args, data_args, training_args, finetuning_args, generating_args, callbacks)
+    # elif finetuning_args.stage == "dpo":
+    #     run_dpo(model_args, data_args, training_args, finetuning_args, callbacks)
+    # elif finetuning_args.stage == "prune":  # 🔍
+    #     run_prune(model_args, data_args, training_args, finetuning_args, pruning_args, callbacks)
+    # elif finetuning_args.stage == "remap_gate":  # 🔍
+    #     run_prune_remap_gate(model_args, data_args, training_args, finetuning_args, pruning_args, callbacks)
+    # else:
+    #     raise ValueError("Unknown task.")
 
 
 def export_model(args: Optional[Dict[str, Any]] = None):

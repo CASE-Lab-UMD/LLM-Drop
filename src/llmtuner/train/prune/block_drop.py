@@ -4,6 +4,8 @@ import os
 import sys
 from argparse import Namespace
 from copy import deepcopy
+import shutil
+
 
 import torch
 import torch.nn.functional as F
@@ -17,6 +19,17 @@ from global_utils.io import create_dir
 from llmtuner.train.prune.utils import prepare_calibration_input, print_gpu_memory
 from llmtuner.train.prune.wrapper import HiddenStatesRecordWrapper
 from transformers.models.mixtral.modeling_mixtral import MixtralForCausalLM, MixtralPreTrainedModel
+
+CUSTOM_FILE ={
+    "llama": {
+        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_llama.py"),
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_llama.py")
+    },
+    "mistral": {
+        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_mistral.py"),
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_mistral.py")
+    },
+}
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +52,7 @@ def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerat
         layers = unwrapped_model.model.layers
 
         accelerator.print("Getting features...")
-        inputs, outputs, attention_mask, position_ids = prepare_calibration_input(unwrapped_model, dataloader, num_samples)  # 🔍
+        inputs, outputs, attention_mask, position_ids, cache_position = prepare_calibration_input(unwrapped_model, dataloader, num_samples)  # 🔍
 
         # 🔍 Get MoE layer ids
         # TODO change for your models. It seems that "config.num_hidden_layers" is OK for many models.
@@ -58,7 +71,6 @@ def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerat
         #           [ 0.5,  0.5, -inf, -inf, -inf, -inf],
         #           [ 0.5, -inf, -inf, -inf, -inf, -inf]]  # shape(6, 6)
         similarities = torch.full((len(layers), len(layers)), -math.inf, device=device)
-
         accelerator.print('Starting ...')
         wrapped_layers = []
 
@@ -79,14 +91,19 @@ def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerat
             # Get states
             handle = layer.register_forward_hook(record_states_hook)
             for j in range(num_samples):
-                outputs[j] = layer(inputs[j], attention_mask=attention_mask[j], position_ids=position_ids[j])[0]
+                if getattr(unwrapped_model.config, "model_type", None) == "llama":
+                    outputs[j] = layer(inputs[j], attention_mask=attention_mask[j], position_ids=position_ids[j], cache_position=cache_position[j])[0]
+                else:
+                    outputs[j] = layer(inputs[j], attention_mask=attention_mask[j], position_ids=position_ids[j])[0]
             handle.remove()
 
             # Update inputs & outputs
             inputs, outputs = outputs, inputs
             print_gpu_memory(accelerator)
 
-        dtype = torch.float32 if num_samples <= 64 else torch.bfloat16
+        # dtype = torch.float32 if num_samples <= 64 else torch.bfloat16
+        # s1ghhh
+        dtype = torch.float32
 
         all_hidden_states = []
         for i in tqdm(range(len(layers)), desc="Concatenating hidden states...", disable=not accelerator.is_main_process):
@@ -118,6 +135,24 @@ def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerat
 
     return similarities
 
+
+def max_with_tolerance(similarities: torch.tensor, tolerance: float):
+    max_value, _ = torch.max(similarities, dim=0)
+    close_indices = torch.where(torch.abs(similarities - max_value) < tolerance)[0]
+    begin_layer_id = close_indices[0]
+
+    return max_value, begin_layer_id
+
+
+def get_top_k(similarities, k, tolerance):
+    dropped_layer_list = []
+    dropped_sim_list = []
+    for _ in range(k):
+        max_value, max_index = max_with_tolerance(similarities, tolerance=tolerance)
+        dropped_layer_list.append(max_index.item())
+        dropped_sim_list.append(max_value.item())
+        similarities[max_index] = 0
+    return dropped_sim_list, dropped_layer_list
 
 def consecutive_block_dropping(args: Namespace, model: MixtralForCausalLM, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
     """
@@ -158,7 +193,7 @@ def discrete_block_dropping(args: Namespace, model, dataloader: DataLoader, acce
     return dropped_layer_list
 
 
-def post_block_drop(prune_model_save_path, model, tokenizer, layer_id_mapping, accelerator):
+def post_block_drop_v1(prune_model_save_path, model, tokenizer, layer_id_mapping, accelerator):
     # get state dict
     state_dict = model.state_dict()
     accelerator.print(f"layer_id_mapping: {layer_id_mapping}")
@@ -230,3 +265,41 @@ def post_block_drop(prune_model_save_path, model, tokenizer, layer_id_mapping, a
 
     accelerator.wait_for_everyone()
     accelerator.print(f"Model saved to {prune_model_save_path}")
+
+
+
+def post_block_drop(prune_model_save_path, model, tokenizer, reserved_layer_list, accelerator: Accelerator, only_update_config=False):
+    unwrapped_model = accelerator.unwrap_model(model)  # 🔍 unwrap model first
+
+    if accelerator.is_main_process:
+        out_cfg = deepcopy(unwrapped_model.config)
+        if getattr(unwrapped_model.config, "model_type", None) == "llama":
+            out_cfg.auto_map = {
+                "AutoConfig": "configuration_dropped_llama.LlamaConfig",
+                "AutoModelForCausalLM": "modeling_dropped_llama.LlamaForCausalLM"
+            }
+
+        elif getattr(unwrapped_model.config, "model_type", None) == "mistral":
+            out_cfg.auto_map = {
+                "AutoConfig": "configuration_dropped_mistral.MistralConfig",
+                "AutoModelForCausalLM": "modeling_dropped_mistral.MistralForCausalLM"
+            }
+
+        else:
+            raise ValueError("Unsupported model type!")
+
+        dropped_attn_list = dropped_mlp_list = list(set(list(range(out_cfg.num_hidden_layers))) - set(reserved_layer_list))
+        out_cfg.drop_mlp_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, f'drop_mlp_list', [])) if v] + dropped_mlp_list
+        out_cfg.drop_attn_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, f'drop_attn_list', [])) if v] + dropped_attn_list
+
+        accelerator.print(f"Dropped attention list: {dropped_attn_list}")
+        accelerator.print(f"Dropped MLP list: {dropped_mlp_list}")
+
+        accelerator.print("Saving...")
+        shutil.copy(CUSTOM_FILE[out_cfg.model_type]["config"], prune_model_save_path)
+        shutil.copy(CUSTOM_FILE[out_cfg.model_type]["model"], prune_model_save_path)
+        # Keep only one copy of the model, update the config each time, be careful with cache. when load, use_cache=False
+        if not only_update_config:
+            model.save_pretrained(prune_model_save_path)
+            tokenizer.save_pretrained(prune_model_save_path)
+        out_cfg.save_pretrained(prune_model_save_path)

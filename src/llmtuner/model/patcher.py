@@ -16,8 +16,8 @@ from ..extras.constants import FILEEXT2TYPE, LAYERNORM_NAMES
 from ..extras.logging import get_logger
 from ..extras.misc import get_current_device, infer_optim_dtype
 from ..extras.packages import is_flash_attn2_available
-from ..extras.patches.llama_patch import apply_llama_patch
-from ..extras.patches.mixtral_patch import patch_mixtral_replace_moe_impl
+# from ..extras.patches.llama_patch import apply_llama_patch
+# from ..extras.patches.mixtral_patch import patch_mixtral_replace_moe_impl
 
 
 if TYPE_CHECKING:
@@ -141,13 +141,13 @@ def _configure_rope(config: "PretrainedConfig", model_args: "ModelArguments", is
     )
 
 
-def _configure_longlora(config: "PretrainedConfig") -> None:
-    if getattr(config, "model_type", None) in SUPPORTED_CLASS_FOR_S2ATTN:
-        setattr(config, "group_size_ratio", 0.25)
-        apply_llama_patch()
-        logger.info("Using shift short attention with group_size_ratio=1/4.")
-    else:
-        logger.warning("Current model does not support shift short attention.")
+# def _configure_longlora(config: "PretrainedConfig") -> None:
+#     if getattr(config, "model_type", None) in SUPPORTED_CLASS_FOR_S2ATTN:
+#         setattr(config, "group_size_ratio", 0.25)
+#         apply_llama_patch()
+#         logger.info("Using shift short attention with group_size_ratio=1/4.")
+#     else:
+#         logger.warning("Current model does not support shift short attention.")
 
 
 def _configure_quantization(
@@ -268,8 +268,8 @@ def patch_config(
     if model_args.rope_scaling is not None:
         _configure_rope(config, model_args, is_trainable)
 
-    if is_trainable and model_args.shift_attn:
-        _configure_longlora(config)
+    # if is_trainable and model_args.shift_attn:
+    #     _configure_longlora(config)
 
     _configure_quantization(config, tokenizer, model_args, config_kwargs)
 
@@ -297,8 +297,8 @@ def patch_model(
 
         set_z3_leaf_modules(model, [MixtralSparseMoeBlock])
 
-        if is_trainable:
-            patch_mixtral_replace_moe_impl()
+        # if is_trainable:
+        #     patch_mixtral_replace_moe_impl()
 
     try:
         model.add_model_tags(["llama-factory"])

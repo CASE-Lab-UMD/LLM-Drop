@@ -73,17 +73,19 @@ def run_prune(
     #     accelerator.wait_for_everyone()
     #     post_experts_drop(pruning_args.prune_model_save_path, model, tokenizer, config, accelerator, preserve_gate=pruning_args.preserve_gate)
     #     exit()
-
+    
     if pruning_args.prune_method == "layer_drop" and pruning_args.layer_drop_method == "post_dropping":
         assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
         reserved_layer_list = load_json(os.path.join(pruning_args.prune_model_save_path, "reserved_layers.json"))
-        post_layers_drop(pruning_args.prune_model_save_path, model, tokenizer, reserved_layer_list, accelerator)
+        post_layers_drop(pruning_args.prune_model_save_path, pruning_args.target_layer, model, tokenizer, reserved_layer_list, accelerator, pruning_args.only_update_config)
         exit()
-
     if pruning_args.prune_method == "block_drop" and pruning_args.block_drop_method == "post_dropping":
+
         assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
-        layer_id_mapping = load_json(os.path.join(pruning_args.prune_model_save_path, "layer_mapping.json"))
-        post_block_drop(pruning_args.prune_model_save_path, model, tokenizer, layer_id_mapping, accelerator)
+        # layer_id_mapping = load_json(os.path.join(pruning_args.prune_model_save_path, "layer_mapping.json"))
+        # post_block_drop(pruning_args.prune_model_save_path, model, tokenizer, layer_id_mapping, accelerator)
+        reserved_layer_list = load_json(os.path.join(pruning_args.prune_model_save_path, "reserved_layers.json"))
+        post_block_drop(pruning_args.prune_model_save_path, model, tokenizer, reserved_layer_list, accelerator, pruning_args.only_update_config)
         exit()
 
     if pruning_args.prune_method in DATA_AWARE_PRUNING_METHODS:
@@ -98,17 +100,17 @@ def run_prune(
                 pad_to_multiple_of=8 if tokenizer.padding_side == "right" else None,  # for shift short attention
                 label_pad_token_id=IGNORE_INDEX if data_args.ignore_pad_token_for_loss else tokenizer.pad_token_id,
             )
-        elif pruning_args.prune_data_type == "rm":
-            data_collator = PairwiseDataCollatorWithPadding(tokenizer, pad_to_multiple_of=8)
-        elif pruning_args.prune_data_type == "ppo":
-            tokenizer.padding_side = "left"  # use left-padding in generation while using right-padding in training
-            data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-        else:  # dpo
-            data_collator = DPODataCollatorWithPadding(
-                tokenizer=tokenizer,
-                pad_to_multiple_of=8,
-                label_pad_token_id=IGNORE_INDEX if data_args.ignore_pad_token_for_loss else tokenizer.pad_token_id,
-            )
+        # elif pruning_args.prune_data_type == "rm":
+        #     data_collator = PairwiseDataCollatorWithPadding(tokenizer, pad_to_multiple_of=8)
+        # elif pruning_args.prune_data_type == "ppo":
+        #     tokenizer.padding_side = "left"  # use left-padding in generation while using right-padding in training
+        #     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
+        # else:  # dpo
+        #     data_collator = DPODataCollatorWithPadding(
+        #         tokenizer=tokenizer,
+        #         pad_to_multiple_of=8,
+        #         label_pad_token_id=IGNORE_INDEX if data_args.ignore_pad_token_for_loss else tokenizer.pad_token_id,
+        #     )
 
         dataloader = DataLoader(dataset, batch_size=1, collate_fn=data_collator, num_workers=8)  # batch size must be 1
 
@@ -116,6 +118,8 @@ def run_prune(
         accelerator.print("Total Used Sample Num:", pruning_args.n_calibration_samples)
         accelerator.print("Max sequence Length:", data_args.cutoff_len)
         accelerator.print(f"Example Data (len = {len(dataset[0]['input_ids'])}):", dataset[0])
+        # print(pruning_args.n_calibration_samples)
+        # print(len(dataset))
         if pruning_args.n_calibration_samples > len(dataset):
             raise ValueError("Number of calibration samples is greater than the number of samples in the dataset!")
 
@@ -179,7 +183,7 @@ def run_prune(
         #     # 🔍 only return the idx of remaining experts.
         #     save_expert_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator)
         if pruning_args.prune_method == "layer_drop":
-            save_layer_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
+            save_layer_dropped_config(pruning_args.target_layer, pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
         elif pruning_args.prune_method == "block_drop":
             save_block_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
         else:
@@ -257,8 +261,10 @@ def run_prune_remap_gate(
     accelerator.print("Number of used samples per device:", num_samples_each_device)
 
     #######################################################################################################
-    update_state_dict = gate_remap(model, model_pruned, dataloader, accelerator, num_samples_each_device)
+    # update_state_dict = gate_remap(model, model_pruned, dataloader, accelerator, num_samples_each_device)
     #######################################################################################################
+
+    print(model_pruned)
 
     # Updating the parameters from the state_dict will cause errors in the FSDP environment.
     # So we need to initialize a new model to load it.

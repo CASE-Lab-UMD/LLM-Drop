@@ -118,7 +118,7 @@ def save_expert_dropped_config(prune_model_save_path, model, tokenizer, accelera
     accelerator.wait_for_everyone()
 
 
-def save_layer_dropped_config(prune_model_save_path, model, tokenizer, accelerator: Accelerator, dropped_layer_list):
+def save_layer_dropped_config(target_layer, prune_model_save_path, model, tokenizer, accelerator: Accelerator, dropped_layer_list):
     # 🔍 save
     if accelerator.is_main_process:
         if not os.path.exists(prune_model_save_path):
@@ -126,7 +126,10 @@ def save_layer_dropped_config(prune_model_save_path, model, tokenizer, accelerat
 
         # 🔍 get reserved MLP layer ids
         unwrapped_model = accelerator.unwrap_model(model)
-        reserved_layer_list = sorted(list(set(range(unwrapped_model.config.num_hidden_layers)) - set(dropped_layer_list)))
+        if target_layer == 'all':
+            reserved_layer_list = sorted(list(set(range(unwrapped_model.config.num_hidden_layers * 2)) - set(dropped_layer_list)))
+        else:
+            reserved_layer_list = sorted(list(set(range(unwrapped_model.config.num_hidden_layers)) - set(dropped_layer_list)))
         accelerator.print(f"Reserved layers: {reserved_layer_list}")
 
         # 🔍 save the config
@@ -146,6 +149,9 @@ def save_block_dropped_config(prune_model_save_path, model, tokenizer, accelerat
         unwrapped_model = accelerator.unwrap_model(model)
         reserved_layer_list = sorted(list(set(range(unwrapped_model.config.num_hidden_layers)) - set(dropped_layer_list)))
         accelerator.print(f"Reserved layers: {reserved_layer_list}")
+        
+        save_file = os.path.join(prune_model_save_path, "reserved_layers.json")
+        save_json(reserved_layer_list, save_file)
 
         layer_id_mapping = {}
         for new_id, reserved_old_id in enumerate(reserved_layer_list):

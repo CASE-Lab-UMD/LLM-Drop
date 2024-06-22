@@ -136,21 +136,26 @@ def check_sparsity_from_state_dict(state_dict):
 @torch.no_grad()
 def prepare_calibration_input(model, dataloader, num_samples=16):
     layers = model.model.layers
-    cache = {'inputs': [], 'attention_mask': [], "position_ids": []}
+
+    cache = {'inputs': [], 'attention_mask': [], "position_ids": [], "position_ids": [], "cache_position": []}
 
     class Catcher(nn.Module):
         def __init__(self, module):
             super().__init__()
             self.module = module
+            # s1ghhh: bypass "AttributeError: 'Catcher' object has no attribute 'self_attn'"
+            self.self_attn = 's1gh'
 
         def forward(self, input, **kwargs):
             # print(input.shape)
             cache['inputs'].append(input)
             cache['attention_mask'].append(kwargs['attention_mask'])
             cache['position_ids'].append(kwargs['position_ids'])
+            cache['cache_position'].append(kwargs['cache_position'] if 'cache_position' in kwargs else None)
             raise ValueError
 
     layers[0] = Catcher(layers[0])
+
     for index, batch in enumerate(dataloader):
         if index >= num_samples:  # 🔍 limit the number of samples in each device, batch_size must be 1
             break
@@ -162,4 +167,4 @@ def prepare_calibration_input(model, dataloader, num_samples=16):
 
     outputs = [None] * len(cache['inputs'])
 
-    return cache['inputs'], outputs, cache['attention_mask'], cache['position_ids']
+    return cache['inputs'], outputs, cache['attention_mask'], cache['position_ids'], cache['cache_position']

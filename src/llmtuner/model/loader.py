@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Optional, Tuple
 from transformers import AutoTokenizer
 from transformers.integrations import is_deepspeed_zero3_enabled
 from .adapter import init_adapter
-from .deepseek.configuration_deepseek import DeepseekConfig
-from .deepseek.modeling_deepseek import DeepseekModel, DeepseekForCausalLM
+# from .deepseek.configuration_deepseek import DeepseekConfig
+# from .deepseek.modeling_deepseek import DeepseekModel, DeepseekForCausalLM
 from .patcher import patch_config, patch_model, patch_tokenizer, patch_valuehead_model
 from .utils import load_valuehead_params, register_autoclass
 from ..extras.logging import get_logger
@@ -18,9 +18,9 @@ if TYPE_CHECKING:
 # 🔍🔍🔍
 from transformers import AutoConfig, AutoModel, AutoModelForCausalLM
 
-AutoConfig.register("deepseek", DeepseekConfig)
-AutoModel.register(DeepseekConfig, DeepseekModel)
-AutoModelForCausalLM.register(DeepseekConfig, DeepseekForCausalLM)
+# AutoConfig.register("deepseek", DeepseekConfig)
+# AutoModel.register(DeepseekConfig, DeepseekModel)
+# AutoModelForCausalLM.register(DeepseekConfig, DeepseekForCausalLM)
 
 logger = get_logger(__name__)
 
@@ -39,14 +39,20 @@ def load_model_and_tokenizer(
 
     try_download_model_from_ms(model_args)
 
+    # config_kwargs = {
+    #     "trust_remote_code": True,
+    #     "cache_dir": model_args.cache_dir,
+    #     "revision": model_args.model_revision,
+    #     "token": model_args.hf_hub_token,
+    #     "attn_implementation": "flash_attention_2",  # 🔍
+    # }
     config_kwargs = {
         "trust_remote_code": True,
         "cache_dir": model_args.cache_dir,
         "revision": model_args.model_revision,
         "token": model_args.hf_hub_token,
-        "attn_implementation": "flash_attention_2",  # 🔍
+        "attn_implementation": "eager",  # 🔍
     }
-
     tokenizer = AutoTokenizer.from_pretrained(
         model_args.model_name_or_path,
         use_fast=model_args.use_fast_tokenizer,
@@ -57,6 +63,8 @@ def load_model_and_tokenizer(
     patch_tokenizer(tokenizer)
 
     config = AutoConfig.from_pretrained(model_args.model_name_or_path, **config_kwargs)
+    config.use_cache=False
+    print(config)
     patch_config(config, tokenizer, model_args, config_kwargs, is_trainable)
 
     model = None

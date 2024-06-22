@@ -6,8 +6,8 @@ import torch.nn.functional as F
 from torch import nn as nn
 
 import transformers
-from llmtuner.model.deepseek.modeling_deepseek import MoEGate
-from transformers.models.mixtral.modeling_mixtral import ExpertLinear, MixtralSparseMoeBlock 
+# from llmtuner.model.deepseek.modeling_deepseek import MoEGate
+# from transformers.models.mixtral.modeling_mixtral import ExpertLinear, MixtralSparseMoeBlock 
 
 logger = logging.getLogger(__name__)
 
@@ -154,6 +154,7 @@ class HiddenStatesRecordWrapper:
 
     def record(self, input, output):
         # input: (1, seq_len, hidden_size)
+        
         if self.record_input:
             self.input_hidden_states.append(input.squeeze(0).clone().cpu())
         if self.record_output:
@@ -177,7 +178,8 @@ class WeightRecordWrapper:
 
 
 class MixtralExpertDropWrapper:
-    def __init__(self, layer: MixtralSparseMoeBlock):
+    # def __init__(self, layer: MixtralSparseMoeBlock):
+    def __init__(self, layer: torch.nn):
         self.layer = layer
         self.scores = None
         self.nsamples = 0
@@ -222,7 +224,8 @@ class MixtralExpertDropWrapper:
 
 
 class DeepseekExpertDropWrapper:
-    def __init__(self, layer: MoEGate):
+    # def __init__(self, layer: MoEGate):
+    def __init__(self, layer: torch.nn):
         self.layer = layer
         self.scores = None
         self.nsamples = 0

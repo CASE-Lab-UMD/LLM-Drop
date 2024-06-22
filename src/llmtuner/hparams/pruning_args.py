@@ -91,6 +91,20 @@ class PruningArguments:
         default=4,
         metadata={"help": 'Number of blocks to drop'}
     )
+    # s1ghhh
+    layer_drop_norm: Optional[bool] = field(
+        default=True,
+        metadata={"help": 'determine whether to consider norm when calculating similarity. If True, use the hidden states before norm to calculate similarity.'}
+    )
+    target_layer: Optional[str] = field(
+        default=None,
+        metadata={"help": 'determine which type of layer is dropped when layer_drop. ',
+            "choices": ["mlp", "attn", "all"]},
+    )
+    only_update_config: Optional[bool] = field(
+        default=False,
+        metadata={"help": 'Only output the config file without saving model weights. '}
+    )
     similarity_cache_file: Optional[str] = field(
         default=None,
         metadata={"help": 'Cached file storing the similarity scores across layers to reduce the computation consumption. '

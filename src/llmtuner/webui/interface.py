@@ -4,14 +4,14 @@ import gradio as gr
 from transformers.utils.versions import require_version
 
 from .common import save_config
-from .components import (
-    create_chat_box,
-    create_eval_tab,
-    create_export_tab,
-    create_infer_tab,
-    create_top,
-    create_train_tab,
-)
+# from .components import (
+#     create_chat_box,
+#     create_eval_tab,
+#     create_export_tab,
+#     create_infer_tab,
+#     create_top,
+#     create_train_tab,
+# )
 from .css import CSS
 from .engine import Engine
 
