@@ -5,8 +5,6 @@ import sys
 from argparse import Namespace
 from copy import deepcopy
 import shutil
-
-
 import torch
 import torch.nn.functional as F
 from accelerate import Accelerator
@@ -15,7 +13,6 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from global_utils.io import create_dir
-# from llmtuner.model.deepseek.modeling_deepseek import DeepseekPreTrainedModel
 from llmtuner.train.prune.utils import prepare_calibration_input, print_gpu_memory
 from llmtuner.train.prune.wrapper import HiddenStatesRecordWrapper
 from transformers.models.mixtral.modeling_mixtral import MixtralForCausalLM, MixtralPreTrainedModel
@@ -101,10 +98,7 @@ def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerat
             inputs, outputs = outputs, inputs
             print_gpu_memory(accelerator)
 
-        # dtype = torch.float32 if num_samples <= 64 else torch.bfloat16
-        # s1ghhh
         dtype = torch.float32
-
         all_hidden_states = []
         for i in tqdm(range(len(layers)), desc="Concatenating hidden states...", disable=not accelerator.is_main_process):
             all_hidden_states.append(torch.cat(wrapped_layers[i].input_hidden_states, dim=0).to(dtype))  # (total_token_num, hidden_size)
@@ -225,30 +219,9 @@ def post_block_drop_v1(prune_model_save_path, model, tokenizer, layer_id_mapping
 
         preserved_layers = sorted([int(s) for s in layer_id_mapping.keys()])
         accelerator.print("preserved_layers", preserved_layers)
-
-        # TODO ignore this, since it is for MoE models.
-        # if isinstance(model, MixtralPreTrainedModel):
-        #     if hasattr(new_config, "layer_experts_idx"):
-        #         new_config.layer_experts_idx = [model.config.layer_experts_idx[i] for i in preserved_layers]
-        #     if isinstance(new_config.num_local_experts, list):
-        #         new_config.num_local_experts = [model.config.num_local_experts[i] for i in preserved_layers]
-
-        # if isinstance(model, MixtralPreTrainedModel):
-        #     if hasattr(new_config, "layer_experts_idx"):
-        #         new_config.layer_experts_idx = [model.config.layer_experts_idx[i] for i in preserved_layers]
-        #     if isinstance(new_config.num_local_experts, list):
-        #         new_config.num_local_experts = [model.config.num_local_experts[i] for i in preserved_layers]
-
-        # elif isinstance(model, DeepseekPreTrainedModel):
-        #     if hasattr(new_config, "layer_experts_idx"):
-        #         new_config.layer_experts_idx = [model.config.layer_experts_idx[i] for i in preserved_layers]
-        #     if isinstance(new_config.n_routed_experts, list):
-        #         new_config.n_routed_experts = [model.config.n_routed_experts[i] for i in preserved_layers]
         accelerator.print("new_config", new_config)
 
         # Model
-        # type(model).from_
-        # new_model = type(model)(new_config)
         new_model = model
         new_model.model.layers = model.model.layers[:len(preserved_layers)]
         
@@ -298,7 +271,6 @@ def post_block_drop(prune_model_save_path, model, tokenizer, reserved_layer_list
         accelerator.print("Saving...")
         shutil.copy(CUSTOM_FILE[out_cfg.model_type]["config"], prune_model_save_path)
         shutil.copy(CUSTOM_FILE[out_cfg.model_type]["model"], prune_model_save_path)
-        # Keep only one copy of the model, update the config each time, be careful with cache. when load, use_cache=False
         if not only_update_config:
             model.save_pretrained(prune_model_save_path)
             tokenizer.save_pretrained(prune_model_save_path)

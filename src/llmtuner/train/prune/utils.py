@@ -1,9 +1,6 @@
 import torch
 from torch import nn as nn, cuda
 
-# from llmtuner.model.deepseek.modeling_deepseek import MoEGate
-# from llmtuner.model.pruning_modules import ExpertLinear
-
 
 def print_gpu_memory(accelerator):
     if accelerator.is_local_main_process:  # 🔍
@@ -40,30 +37,10 @@ def find_modules(module, layers=[], name='') -> dict:
     return res
 
 
-# def find_moe_expert_linears(module) -> dict:
-#     # 🔍 find only the expert weights
-#     res = find_modules(module, [ExpertLinear])
-#     return res
-
 def find_linears(module) -> dict:
     # 🔍 find only the expert weights
     res = find_modules(module, [nn.Linear])
     return res
-
-# def find_moe_gates(module) -> dict:
-#     # 🔍 find only the gate network
-#     res = find_modules(module, [nn.Linear, MoEGate])  # MoEGate for DeepSeek
-#     for key in list(res.keys()):
-#         if ".gate." not in key:
-#             res.pop(key)
-#     return res
-
-
-# def find_moe_expert_linears_and_gate(module) -> dict:
-#     # 🔍 find the expert weights and gate weights
-#     res_experts = find_moe_expert_linears(module)
-#     res_gates = find_moe_gates(module)
-#     return {**res_experts, **res_gates}  # merge the two dict
 
 
 @torch.no_grad()
@@ -102,17 +79,12 @@ def check_sparsity_from_state_dict(state_dict):
     # Get corresponding names for each layer
     layer_params = {}
     for name in sorted(list(state_dict.keys())):
-        # Example: model.layers.5.block_sparse_moe.experts.2.w3.weight
-        # Example: model.layers.13.mlp.experts.28.up_proj
-        # print(f"name: {name}")
-
         if "layers" in name:
             layer_id = int(name.split(".")[2])
             if layer_id not in layer_params:
                 layer_params[layer_id] = [name]
             else:
                 layer_params[layer_id].append(name)
-        # print(f"layer_params: {layer_params}")
     layer_num = max(list(layer_params.keys())) + 1
 
     # Calculate sparsity
@@ -155,7 +127,6 @@ def prepare_calibration_input(model, dataloader, num_samples=16):
             raise ValueError
 
     layers[0] = Catcher(layers[0])
-
     for index, batch in enumerate(dataloader):
         if index >= num_samples:  # 🔍 limit the number of samples in each device, batch_size must be 1
             break
@@ -164,7 +135,5 @@ def prepare_calibration_input(model, dataloader, num_samples=16):
         except ValueError:
             pass
     layers[0] = layers[0].module
-
     outputs = [None] * len(cache['inputs'])
-
     return cache['inputs'], outputs, cache['attention_mask'], cache['position_ids'], cache['cache_position']
