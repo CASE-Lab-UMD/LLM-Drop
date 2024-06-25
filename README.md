@@ -8,7 +8,12 @@ Pipeline for Block Drop and Layer Drop is based on the [LLaMA-Factory](https://g
 The quantization is implemented based on the [AutoAWQ](https://github.com/casper-hansen/AutoAWQ) and [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ).
 
 ## Introduction
-Transformer-based LLMs have potential redundancy in the architecture. In the work, we systemantically invesitigate the architecture-redundancy across different types of modules, i.e., Blocks, Attention and MLP layers. Surprisingly, we found attention layers, the core component of transformer, are much more redundant, e.g., Llama-3-70B can be dropped by half of the attention layers while maintaining the performce. 
+Transformer-based large language models (LLMs) often contain architectural redundancies. In this work, we systematically investigate redundancy across different types of modules, including Blocks, Attention layers, and MLP layers. Surprisingly, we found that attention layers, the core component of transformers, are particularly redundant. For example, in the Llama-3-70B model, **half of the attention layers can be dropped** while maintaining performance. Based on our observation.
+Our observations indicate that this redundancy in Attention layers persists throughout the training process, necessitating Attention Drop.
+Additionally, dropping attention layers significantly enhances computational and memory efficiency. 
+Our findings are informative for the ML community and provide insights for future architecture design.
+
+![Layer-Drop.svg](Layer_Drop.svg)
 
 ## Installation
 
