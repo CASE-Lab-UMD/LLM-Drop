@@ -33,10 +33,10 @@ pip install -e .
 cd ./src/llmtuner/train/quantization/AutoAWQ
 pip install -e .
 
-cd .src/llmtuner/train/quantization/AutoAWQ/AutoAWQ_kernels
+cd ./src/llmtuner/train/quantization/AutoAWQ/AutoAWQ_kernels
 pip install -e .
 
-cd ..src/llmtuner/train/quantization//AutoGPTQ
+cd ./src/llmtuner/train/quantization//AutoGPTQ
 pip install -vvv --no-build-isolation -e .
 ```
 
