@@ -92,7 +92,14 @@ Remember to use the modeling files in `src/llmtuner/model` to load the Mixtral a
 ## Citation
 
 ```latex
-To be filled. 
+@misc{he2024matters,
+      title={What Matters in Transformers? Not All Attention is Needed}, 
+      author={Shwai He and Guoheng Sun and Zheyu Shen and Ang Li},
+      year={2024},
+      eprint={2406.15786},
+      archivePrefix={arXiv},
+      primaryClass={id='cs.LG' full_name='Machine Learning' is_active=True alt_name=None in_archive='cs' is_general=False description='Papers on all aspects of machine learning research (supervised, unsupervised, reinforcement learning, bandit problems, and so on) including also robustness, explanation, fairness, and methodology. cs.LG is also an appropriate primary category for applications of machine learning methods.'}
+}
 ```
 
 ## Contact Us
