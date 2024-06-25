@@ -111,12 +111,14 @@ class LlamaLikeModel(nn.Module):
 
         h = self.embedding(input_ids)
 
-        mask = fused_utils.prepare_attention_mask(
-            seqlen=seqlen,
-            start_pos=self.blocks[0].attn.start_pos,
-            device=input_ids.device,
-            type_as=h,
-        )
+        mask = None
+        if self.blocks[0].attn is not None:
+            mask = fused_utils.prepare_attention_mask(
+                seqlen=seqlen,
+                start_pos=self.blocks[0].attn.start_pos,
+                device=input_ids.device,
+                type_as=h,
+            )
 
         for layer in self.blocks:
             h, mask = fused_utils.prepare_correct_devices(

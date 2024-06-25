@@ -97,28 +97,34 @@ class LlamaLikeBlock(nn.Module):
             self.head_dim = head_dim
 
         self.hidden_size = hidden_size
-        self.norm_1 = norm_1.to(dev)
-        self.attn = QuantAttentionFused(
-            self.hidden_size,
-            self.n_heads,
-            self.n_kv_heads,
-            qkv_layer,
-            o_proj,
-            dev=dev,
-            max_seq_len=max_seq_len,
-            use_alibi=use_alibi,
-            rope_theta=rope_theta,
-            partial_rotary_factor=partial_rotary_factor,
-            head_dim=head_dim,
-        ).to(dev)
+        self.norm_1 = norm_1
+        if norm_1 is not None:
+            self.norm_1 = norm_1.to(dev)
+        
+        self.attn = qkv_layer
+        if qkv_layer is not None:
+            self.attn = QuantAttentionFused(
+                self.hidden_size,
+                self.n_heads,
+                self.n_kv_heads,
+                qkv_layer,
+                o_proj,
+                dev=dev,
+                max_seq_len=max_seq_len,
+                use_alibi=use_alibi,
+                rope_theta=rope_theta,
+                partial_rotary_factor=partial_rotary_factor,
+                head_dim=head_dim,
+            ).to(dev)
+            
+        self.norm_2 = norm_2
         if norm_2 is not None:
             self.norm_2 = norm_2.to(dev)
-        else:
-            self.norm_2 = norm_2
+        
+        self.mlp = mlp
         if mlp is not None:
             self.mlp = mlp.to(dev)
-        else:
-            self.mlp = mlp
+        
         self.device = dev
 
     def forward(
@@ -129,17 +135,20 @@ class LlamaLikeBlock(nn.Module):
         attention_mask=None,
         is_causal=None,
     ):
-        norm_out = self.norm_1(hidden_states)
-        attn_output, _, past_key_value = self.attn.forward(
-            hidden_states=norm_out,
-            past_key_value=past_key_value,
-            attention_mask=attention_mask,
-        )
-
-        h = hidden_states.to(attn_output.device) + attn_output
+        if self.norm_1 is not None:
+            norm_out = self.norm_1(hidden_states)
+            attn_output, _, past_key_value = self.attn.forward(
+                hidden_states=norm_out,
+                past_key_value=past_key_value,
+                attention_mask=attention_mask,
+            )
+            h = hidden_states.to(attn_output.device) + attn_output
+        else:
+            h = hidden_states
         if self.norm_2 is not None:
             out = h + self.mlp.forward(self.norm_2(h))
-
+        else:
+            out = h
         return out, None, past_key_value
 
 

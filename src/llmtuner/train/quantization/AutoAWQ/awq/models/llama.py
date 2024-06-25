@@ -99,27 +99,41 @@ class LlamaFuser:
 
         module: OldLlamaDecoderLayer
         for module in tqdm.tqdm(self.model.model.layers, desc="Fusing layers..."):
-            device = next(iter(module.state_dict().values())).device
-            qkv = fuse_qkv(
-                module,
-                module.self_attn.q_proj,
-                module.self_attn.k_proj,
-                module.self_attn.v_proj,
-            )
-            norm_1 = FasterTransformerRMSNorm(
-                module.input_layernorm.weight, module.input_layernorm.variance_epsilon
-            )
-            norm_2 = FasterTransformerRMSNorm(
-                module.post_attention_layernorm.weight,
-                module.post_attention_layernorm.variance_epsilon,
-            )
+            # print(f"{module}, {module.state_dict().values()}")
+            if not module.state_dict().values():
+                # continue # TODO skip empty blocks
+                device = None
+            else:
+                device = next(iter(module.state_dict().values())).device
+            qkv = None
+            norm_1 = None
+            if hasattr(module, "drop_attn") and module.drop_attn:
+                pass
+            else:
+                qkv = fuse_qkv(
+                    module,
+                    module.self_attn.q_proj,
+                    module.self_attn.k_proj,
+                    module.self_attn.v_proj,
+                )
+                norm_1 = FasterTransformerRMSNorm(
+                    module.input_layernorm.weight, module.input_layernorm.variance_epsilon
+                )
+            norm_2 = None
+            if hasattr(module, "drop_mlp") and module.drop_mlp:
+                pass
+            else:
+                norm_2 = FasterTransformerRMSNorm(
+                    module.post_attention_layernorm.weight,
+                    module.post_attention_layernorm.variance_epsilon,
+                )
             blocks.append(
                 LlamaLikeBlock(
                     hidden_size=self.model.config.hidden_size,
                     n_heads=self.model.config.num_attention_heads,
                     n_kv_heads=self.model.config.num_key_value_heads,
                     qkv_layer=qkv,
-                    o_proj=module.self_attn.o_proj,
+                    o_proj=module.self_attn.o_proj if qkv is not None else None,
                     mlp=module.mlp,
                     norm_1=norm_1,
                     norm_2=norm_2,

@@ -21,6 +21,8 @@ def prepare_correct_devices(next_layer, hidden_states, mask):
 
 def prepare_cache(blocks, seqlen: int) -> int:
     for block in blocks:
+        if block.attn is None:
+            continue
         start_pos = block.attn.start_pos
         will_cache_be_exceeded = start_pos + seqlen > block.attn.max_seq_len
 

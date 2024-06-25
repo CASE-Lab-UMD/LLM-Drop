@@ -6,7 +6,7 @@ from awq.modules.fused.block import MixtralBlock
 from awq.modules.fused.model import MixtralModel
 from awq.modules.fused.moe import FusedSparseMoeBlock
 from awq.utils.fused_utils import fuse_qkv, fuse_linears
-from llmtuner.model.mixtral.modeling_mixtral import (
+from transformers.models.mixtral.modeling_mixtral import (
     MixtralDecoderLayer as OldMixtralDecoderLayer,
     MixtralForCausalLM as OldMixtralForCausalLM,
 )
