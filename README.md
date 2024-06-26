@@ -41,7 +41,7 @@ pip install -vvv --no-build-isolation -e .
 ```
 
 ## Prepare Models
-Download the models (e.g., Mistral-7B, Llama-2 and Llama-3) from HuggingFace. We create [new config and modeling files](https://github.com/Shwai-He/LLM-Drop/tree/main/src/llmtuner/train/prune/models) to represent the models by layers or blocks. 
+Download the models (e.g., Mistral-7B, Llama-2 and Llama-3) from HuggingFace. We create [new config and modeling files](https://github.com/Shwai-He/LLM-Drop/tree/main/src/llmtuner/compression/prune/models) to represent the models by layers or blocks. 
 The key ``auto_map`` needs to be added in the config.json to utilize the new files. 
 Take Mistral-7B as an example: 
 ```json
