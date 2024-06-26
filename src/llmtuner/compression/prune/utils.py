@@ -115,8 +115,7 @@ def prepare_calibration_input(model, dataloader, num_samples=16):
         def __init__(self, module):
             super().__init__()
             self.module = module
-            # s1ghhh: bypass "AttributeError: 'Catcher' object has no attribute 'self_attn'"
-            self.self_attn = 's1gh'
+            self.self_attn = None
 
         def forward(self, input, **kwargs):
             # print(input.shape)

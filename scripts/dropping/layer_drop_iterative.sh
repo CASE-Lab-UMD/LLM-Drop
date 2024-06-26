@@ -1,8 +1,10 @@
 #!/usr/bin/bash
+port="21304"
+GPUs="0,1,2,3"
 
 dataset="c4_val"
 prune_data_type="pt"
-n_calibration_samples=32
+n_calibration_samples=128
 seq_len=2048
 
 prune_method="layer_drop"
@@ -24,7 +26,8 @@ for ((epoch=1; epoch<=num_epochs; epoch++)) do
   output_dir=./results_prune/Iterative/${folder_name}
   prune_model_save_path=${output_dir}/checkpoint
 
-  python src/train_bash.py \
+  CUDA_VISIBLE_DEVICES=$GPUs accelerate launch --main_process_port $port \
+    src/train_bash.py \
     --stage prune \
     --model_name_or_path ${model_name_or_path} \
     --dataset ${dataset} \

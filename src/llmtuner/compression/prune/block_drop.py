@@ -12,7 +12,7 @@ from torch import no_grad
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from global_utils.io import create_dir
+from .io import create_dir
 from llmtuner.compression.prune.utils import prepare_calibration_input, print_gpu_memory
 from llmtuner.compression.prune.wrapper import HiddenStatesRecordWrapper
 from transformers.models.mixtral.modeling_mixtral import MixtralForCausalLM, MixtralPreTrainedModel
@@ -31,7 +31,6 @@ CUSTOM_FILE ={
 logger = logging.getLogger(__name__)
 
 
-# TODO this function seems not specific to MoE, so you can start with it.
 @no_grad()
 def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int, cache_file=None):
     device = accelerator.device
@@ -51,8 +50,7 @@ def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerat
         accelerator.print("Getting features...")
         inputs, outputs, attention_mask, position_ids, cache_position = prepare_calibration_input(unwrapped_model, dataloader, num_samples)  # 🔍
 
-        # 🔍 Get MoE layer ids
-        # TODO change for your models. It seems that "config.num_hidden_layers" is OK for many models.
+        # 🔍 Get layer ids
         if isinstance(unwrapped_model, MixtralPreTrainedModel):
             num_layers = unwrapped_model.config.num_hidden_layers
         # elif isinstance(unwrapped_model, DeepseekPreTrainedModel):
@@ -185,59 +183,6 @@ def discrete_block_dropping(args: Namespace, model, dataloader: DataLoader, acce
     dropped_layer_list = sorted_layer_id[:drop_n].tolist()
     accelerator.print(f"Dropped layer: {dropped_layer_list}, similarities: {sorted_similarities[:drop_n].tolist()}")
     return dropped_layer_list
-
-
-def post_block_drop_v1(prune_model_save_path, model, tokenizer, layer_id_mapping, accelerator):
-    # get state dict
-    state_dict = model.state_dict()
-    accelerator.print(f"layer_id_mapping: {layer_id_mapping}")
-
-    # 🔍 update state dict for saving
-    if accelerator.is_main_process:
-        save_state_dict = {}
-        for state_name in sorted(list(state_dict.keys())):
-            for old_layer_id, new_layer_id in layer_id_mapping.items():
-                if f"layers.{old_layer_id}." in state_name:  # convert old ids to new ones
-                    save_state_dict[state_name.replace(f"layers.{old_layer_id}", f"layers.{new_layer_id}")] = state_dict[state_name]
-                    accelerator.print(state_name, "-->", state_name.replace(f"layers.{old_layer_id}", f"layers.{new_layer_id}"))
-                    break
-                elif f"layers." not in state_name:  # copy other states
-                    save_state_dict[state_name] = state_dict[state_name]
-                    accelerator.print(state_name, "-->", state_name)
-                    break
-
-        accelerator.print("Keys in save_state_dict:")
-        for key in save_state_dict.keys():
-            accelerator.print(key)
-
-        # 🔍 initialize a new model and save
-        accelerator.print("Initializing the new model...")
-
-        # Config
-        new_config = deepcopy(model.config)
-        new_config.num_hidden_layers = len(layer_id_mapping)
-
-        preserved_layers = sorted([int(s) for s in layer_id_mapping.keys()])
-        accelerator.print("preserved_layers", preserved_layers)
-        accelerator.print("new_config", new_config)
-
-        # Model
-        new_model = model
-        new_model.model.layers = model.model.layers[:len(preserved_layers)]
-        
-        new_model.load_state_dict(save_state_dict, strict=True)
-        if not hasattr(new_model, "quantization_config"):
-            new_model.bfloat16()
-        accelerator.print("new_model", new_model)
-
-        # Save
-        accelerator.print("Saving...")
-        new_model.save_pretrained(prune_model_save_path)
-        tokenizer.save_pretrained(prune_model_save_path)
-        new_config.save_pretrained(prune_model_save_path)
-
-    accelerator.wait_for_everyone()
-    accelerator.print(f"Model saved to {prune_model_save_path}")
 
 
 

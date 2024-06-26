@@ -13,7 +13,7 @@ from torch import no_grad
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from global_utils.io import create_dir
+from .io import create_dir
 from transformers.models.mixtral.modeling_mixtral import MixtralForCausalLM, MixtralPreTrainedModel
 from .utils import print_gpu_memory, prepare_calibration_input
 from .wrapper import HiddenStatesRecordWrapper

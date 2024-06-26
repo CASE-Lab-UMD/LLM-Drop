@@ -6,8 +6,7 @@ import torch.nn.functional as F
 from torch import nn as nn
 
 import transformers
-# from llmtuner.model.deepseek.modeling_deepseek import MoEGate
-# from transformers.models.mixtral.modeling_mixtral import ExpertLinear, MixtralSparseMoeBlock 
+
 
 logger = logging.getLogger(__name__)
 
@@ -178,7 +177,6 @@ class WeightRecordWrapper:
 
 
 class MixtralExpertDropWrapper:
-    # def __init__(self, layer: MixtralSparseMoeBlock):
     def __init__(self, layer: torch.nn):
         self.layer = layer
         self.scores = None
@@ -224,7 +222,6 @@ class MixtralExpertDropWrapper:
 
 
 class DeepseekExpertDropWrapper:
-    # def __init__(self, layer: MoEGate):
     def __init__(self, layer: torch.nn):
         self.layer = layer
         self.scores = None

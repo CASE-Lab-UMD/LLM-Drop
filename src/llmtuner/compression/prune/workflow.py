@@ -7,13 +7,12 @@ from accelerate import Accelerator
 from accelerate.state import AcceleratorState
 from torch.utils.data import DataLoader
 
-from global_utils.io import load_json, save_json
 from llmtuner.data import get_dataset
 from llmtuner.extras.constants import IGNORE_INDEX
 from llmtuner.model import load_model_and_tokenizer
 
 from transformers import DataCollatorForSeq2Seq, DataCollatorForLanguageModeling, DataCollatorWithPadding
-from .io import save_sparse_model, save_update_state_dict, save_decomposed_model, save_expert_dropped_config, save_block_dropped_config, save_layer_dropped_config
+from .io import load_json, save_sparse_model, save_update_state_dict, save_decomposed_model, save_expert_dropped_config, save_block_dropped_config, save_layer_dropped_config
 from .block_drop import consecutive_block_dropping, discrete_block_dropping, post_block_drop
 from .layer_drop import discrete_layer_dropping, post_layers_drop
 

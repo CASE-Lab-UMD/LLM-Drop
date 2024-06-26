@@ -1,4 +1,3 @@
-# 4.38.1
 # coding=utf-8
 # Copyright 2022 EleutherAI and the HuggingFace Inc. team. All rights reserved.
 #
@@ -18,8 +17,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+""" transformers==4.38.1"""
 """ LLaMA model configuration"""
-
 from transformers.configuration_utils import PretrainedConfig
 from transformers.utils import logging
 

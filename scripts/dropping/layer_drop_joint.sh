@@ -1,4 +1,6 @@
 #!/usr/bin/bash
+port="21304"
+GPUs="0,1,2,3"
 
 dataset="c4_val"
 prune_data_type="pt"
@@ -21,7 +23,8 @@ echo ${folder_name}
 output_dir=./results_prune/${folder_name}
 prune_model_save_path=${output_dir}/checkpoint
 
-python src/train_bash.py \
+CUDA_VISIBLE_DEVICES=$GPUs accelerate launch --main_process_port $port \
+  src/train_bash.py \
   --stage prune \
   --model_name_or_path ${model_name_or_path} \
   --dataset ${dataset} \
@@ -45,7 +48,7 @@ python src/train_bash.py \
 
 layer_drop_method="post_dropping"
 # set only_update_config to True to save the disk memory
-only_update_config=True 
+only_update_config=False
 
 python \
   src/train_bash.py \

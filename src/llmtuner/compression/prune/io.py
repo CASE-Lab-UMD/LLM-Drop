@@ -1,11 +1,24 @@
 import os
-
+import json
 import torch
 from accelerate import Accelerator
 
-from global_utils.io import save_json
 from .utils import check_sparsity_from_state_dict
 
+def load_json(file_path):
+    with open(file_path, "r", encoding="utf8") as f:
+        data = json.load(f)
+    return data
+
+
+def save_json(data, file_path, indent=4, **kwargs):
+    create_dir(os.path.dirname(file_path))
+    with open(file_path, "w", encoding="utf8") as f:
+        f.write(f"{json.dumps(data, ensure_ascii=False, indent=indent, **kwargs)}\n")
+
+def create_dir(dir):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
 
 def save_update_state_dict(save_path, accelerator, update_state_dict):
     accelerator.print("Saving state dicts...")

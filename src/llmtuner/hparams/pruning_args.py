@@ -91,7 +91,6 @@ class PruningArguments:
         default=4,
         metadata={"help": 'Number of blocks to drop'}
     )
-    # s1ghhh
     layer_drop_norm: Optional[bool] = field(
         default=True,
         metadata={"help": 'determine whether to consider norm when calculating similarity. If True, use the hidden states before norm to calculate similarity.'}

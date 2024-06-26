@@ -12,8 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+""" transformers==4.38.1"""
 """ Mistral model configuration"""
-
 from transformers.configuration_utils import PretrainedConfig
 from transformers.utils import logging
 
