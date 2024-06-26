@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING, Optional, Tuple
 from transformers import AutoTokenizer
 from transformers.integrations import is_deepspeed_zero3_enabled
 from .adapter import init_adapter
-# from .deepseek.configuration_deepseek import DeepseekConfig
-# from .deepseek.modeling_deepseek import DeepseekModel, DeepseekForCausalLM
 from .patcher import patch_config, patch_model, patch_tokenizer, patch_valuehead_model
 from .utils import load_valuehead_params, register_autoclass
 from ..extras.logging import get_logger
@@ -18,9 +16,6 @@ if TYPE_CHECKING:
 # 🔍🔍🔍
 from transformers import AutoConfig, AutoModel, AutoModelForCausalLM
 
-# AutoConfig.register("deepseek", DeepseekConfig)
-# AutoModel.register(DeepseekConfig, DeepseekModel)
-# AutoModelForCausalLM.register(DeepseekConfig, DeepseekForCausalLM)
 
 logger = get_logger(__name__)
 

@@ -84,7 +84,7 @@ def _get_quantization_dataset(tokenizer: "PreTrainedTokenizer", model_args: "Mod
         data_path = model_args.export_quantization_dataset
         data_files = None
 
-    dataset = load_dataset(path=data_path, data_files=data_files, split="train", cache_dir=model_args.cache_dir)
+    dataset = load_dataset(path=data_path, data_files=data_files, split="compression", cache_dir=model_args.cache_dir)
     maxlen = model_args.export_quantization_maxlen
 
     samples = []

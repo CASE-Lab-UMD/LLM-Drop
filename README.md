@@ -30,13 +30,13 @@ cd ./LLM-Drop
 pip install -e .
 
 #For Quantization:
-cd ./src/llmtuner/train/quantization/AutoAWQ
+cd ./src/llmtuner/compression/quantization/AutoAWQ
 pip install -e .
 
-cd ./src/llmtuner/train/quantization/AutoAWQ/AutoAWQ_kernels
+cd ./src/llmtuner/compression/quantization/AutoAWQ/AutoAWQ_kernels
 pip install -e .
 
-cd ./src/llmtuner/train/quantization//AutoGPTQ
+cd ./src/llmtuner/compression/quantization//AutoGPTQ
 pip install -vvv --no-build-isolation -e .
 ```
 

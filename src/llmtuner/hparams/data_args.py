@@ -21,7 +21,7 @@ class DataArguments:
         metadata={"help": "Path to the folder containing the datasets."},
     )
     split: Optional[str] = field(
-        default="train",
+        default="compression",
         metadata={"help": "Which dataset split to use for training and evaluation."},
     )
     cutoff_len: Optional[int] = field(

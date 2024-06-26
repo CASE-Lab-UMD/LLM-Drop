@@ -14,7 +14,7 @@ from llmtuner.model.deepseek.configuration_deepseek import DeepseekConfig
 from llmtuner.model.deepseek.modeling_deepseek import DeepseekModel, DeepseekForCausalLM
 from llmtuner.model.mixtral.configuration_mixtral import MixtralConfig
 from llmtuner.model.mixtral.modeling_mixtral import MixtralModel, MixtralForCausalLM
-from llmtuner.train.prune.io import create_dir
+from llmtuner.compression.prune.io import create_dir
 
 AutoConfig.register("deepseek", DeepseekConfig)
 AutoModel.register(DeepseekConfig, DeepseekModel)

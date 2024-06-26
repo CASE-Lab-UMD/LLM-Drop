@@ -68,7 +68,7 @@ class LoraArguments:
     )
     lora_bf16_mode: Optional[bool] = field(
         default=False,
-        metadata={"help": "Whether or not to train lora adapters in bf16 precision."},
+        metadata={"help": "Whether or not to compression lora adapters in bf16 precision."},
     )
     use_rslora: Optional[bool] = field(
         default=False,
