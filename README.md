@@ -57,7 +57,7 @@ Additionally, the key ``drop_attn_list`` and ``drop_mlp_list`` respectively mark
  "drop_mlp_list": [],
  "drop_attn_list": [25, 26, 24, 22],
 ```
-#### Drop 4 MLPs:
+#### Drop 4 MLPs layers:
 ```json
  "drop_mlp_list": [26, 27, 25, 24],
  "drop_attn_list": [],
