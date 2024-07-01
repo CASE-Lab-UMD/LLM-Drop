@@ -31,8 +31,79 @@ CUSTOM_FILE ={
 logger = logging.getLogger(__name__)
 
 
-@no_grad()
 def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int, cache_file=None):
+    device = accelerator.device
+
+    if cache_file is not None and os.path.exists(cache_file):
+        # use cached file
+        accelerator.print(f"Loading cached model from {cache_file}")
+        similarities = torch.load(cache_file, map_location=device)
+
+    else:
+        # calculate similarities
+        accelerator.print(f"No cached model found. Running model on {num_samples} samples for each device.")
+        unwrapped_model = accelerator.unwrap_model(model)  # 🔍 unwrap model first
+        unwrapped_model.config.use_cache = False
+        layers = unwrapped_model.model.layers
+
+        accelerator.print("Getting features...")
+        inputs, outputs, attention_mask, position_ids = prepare_calibration_input(unwrapped_model, dataloader,
+                                                                                  num_samples)  # 🔍
+        num_layers = unwrapped_model.config.num_hidden_layers
+        # 🔍 Initialize the similarities.
+        # Row: each layer
+        # Column: similarity to the next n layer
+        # Example: [ [0.5],  [0.5],  [0.5],  [0.5],  [0.5],  [0.5]]  # shape(6, 1)
+        similarities = torch.full((len(layers), 1), -math.inf, device=device)
+
+        accelerator.print('Starting ...')
+        dtype = torch.float32
+
+        for i in tqdm(range(num_layers), desc="Recording hidden states...", disable=not accelerator.is_main_process):
+            sys.stderr.flush()
+            torch.cuda.empty_cache()
+            print_gpu_memory(accelerator)
+            layer = layers[i]
+
+            # Wrap layer
+            wrapped_layer = HiddenStatesRecordWrapper(layer, record_input=True, record_output=True)  # 🔍 Wrap layer
+
+            # Forward hook for recording hidden states
+            def record_states_hook(_, input, output):
+                wrapped_layer.record(input[0].data, output[0].data)
+
+            # Get states
+            handle = layer.register_forward_hook(record_states_hook)
+            for j in range(num_samples):
+                outputs[j] = layer(inputs[j], attention_mask=attention_mask[j], position_ids=position_ids[j])[0]
+            handle.remove()
+
+            # Update inputs & outputs
+            inputs, outputs = outputs, inputs
+            print_gpu_memory(accelerator)
+
+            input_hidden_states = torch.cat(wrapped_layer.input_hidden_states, dim=0).to(dtype).to(device)
+            output_hidden_states = torch.cat(wrapped_layer.output_hidden_states, dim=0).to(dtype).to(device)
+            cos_sim = F.cosine_similarity(input_hidden_states, output_hidden_states, dim=-1)  # (total_token_num)
+            cos_sim = cos_sim.mean()
+            cos_sim = accelerator.reduce(cos_sim, reduction="mean")  # 🔍 All reduce across devices
+            similarities[i, 0] = cos_sim
+            layer.to("cpu")  # 🔍
+
+        # Save to the cache file
+        if cache_file is not None:
+            if accelerator.is_main_process:
+                create_dir(os.path.dirname(cache_file))
+                torch.save(similarities.clone().cpu(), cache_file)
+                print(f"Saving cached similarities to {cache_file}")
+            accelerator.wait_for_everyone()
+
+    accelerator.print("similarities\n", similarities)
+
+    return similarities
+
+@no_grad()
+def get_block_similarities_consecutive(model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int, cache_file=None):
     device = accelerator.device
 
     if cache_file is not None and os.path.exists(cache_file):
@@ -153,7 +224,7 @@ def consecutive_block_dropping(args: Namespace, model: MixtralForCausalLM, datal
     """
     drop_n = args.drop_n
 
-    similarities = get_block_similarities(model, dataloader, accelerator, num_samples, cache_file=args.similarity_cache_file)
+    similarities = get_block_similarities_consecutive(model, dataloader, accelerator, num_samples, cache_file=args.similarity_cache_file)
     similarities_drop_n = similarities[:, drop_n].view(-1)
     max_similarity, begin_layer_id = torch.max(similarities_drop_n, dim=0)
     accelerator.print(f"similarities_drop_n: {similarities_drop_n}")
@@ -174,7 +245,6 @@ def discrete_block_dropping(args: Namespace, model, dataloader: DataLoader, acce
     drop_n = args.drop_n
 
     similarities = get_block_similarities(model, dataloader, accelerator, num_samples, cache_file=args.similarity_cache_file)
-    # similarities = get_block_similarities(model, dataloader, accelerator, num_samples, cache_file=None)
 
     similarities_drop_1 = similarities[:, 0].view(-1)
     sorted_similarities, sorted_layer_id = torch.sort(similarities_drop_1, dim=0, descending=True)
