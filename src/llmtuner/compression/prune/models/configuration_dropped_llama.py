@@ -159,7 +159,6 @@ class LlamaConfig(PretrainedConfig):
                 elif isinstance(drop_attn_list[idx], int):
                     new_drop_attn_list.append(drop_attn_list[idx])
 
-        # if drop_mlp_list is not None and not isinstance(drop_mlp_list[0], int):
         new_drop_mlp_list = []
         if drop_mlp_list is not None:
             for idx in range(len(drop_mlp_list)):
