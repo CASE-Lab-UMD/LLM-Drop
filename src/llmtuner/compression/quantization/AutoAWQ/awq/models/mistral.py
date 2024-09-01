@@ -38,51 +38,53 @@ class MistralAWQForCausalLM(BaseAWQForCausalLM):
     ):
         layers = []
 
-        # attention input
-        if "self_attn.q_proj" in input_feat:
+        if module.self_attn is not None:
+            # attention input
+            if "self_attn.q_proj" in input_feat:
+                layers.append(
+                    dict(
+                        prev_op=module.input_layernorm,
+                        layers=[
+                            module.self_attn.q_proj,
+                            module.self_attn.k_proj,
+                            module.self_attn.v_proj,
+                        ],
+                        inp=input_feat["self_attn.q_proj"],
+                        module2inspect=module.self_attn,
+                        kwargs=module_kwargs,
+                    )
+                )
+
+            # attention out
+            # Please refer to https://github.com/mit-han-lab/llm-awq/pull/67#issue-1850622696
+            if module.self_attn.v_proj.weight.shape == module.self_attn.o_proj.weight.shape:
+                layers.append(
+                    dict(
+                        prev_op=module.self_attn.v_proj,
+                        layers=[module.self_attn.o_proj],
+                        inp=input_feat["self_attn.o_proj"],
+                    )
+                )
+
+        if module.mlp is not None:
+            # linear 1
             layers.append(
                 dict(
-                    prev_op=module.input_layernorm,
-                    layers=[
-                        module.self_attn.q_proj,
-                        module.self_attn.k_proj,
-                        module.self_attn.v_proj,
-                    ],
-                    inp=input_feat["self_attn.q_proj"],
-                    module2inspect=module.self_attn,
-                    kwargs=module_kwargs,
+                    prev_op=module.post_attention_layernorm,
+                    layers=[module.mlp.gate_proj, module.mlp.up_proj],
+                    inp=input_feat["mlp.gate_proj"],
+                    module2inspect=module.mlp,
                 )
             )
 
-        # attention out
-        # Please refer to https://github.com/mit-han-lab/llm-awq/pull/67#issue-1850622696
-        if module.self_attn.v_proj.weight.shape == module.self_attn.o_proj.weight.shape:
+            # linear 2
             layers.append(
                 dict(
-                    prev_op=module.self_attn.v_proj,
-                    layers=[module.self_attn.o_proj],
-                    inp=input_feat["self_attn.o_proj"],
+                    prev_op=module.mlp.up_proj,
+                    layers=[module.mlp.down_proj],
+                    inp=input_feat["mlp.down_proj"],
                 )
             )
-
-        # linear 1
-        layers.append(
-            dict(
-                prev_op=module.post_attention_layernorm,
-                layers=[module.mlp.gate_proj, module.mlp.up_proj],
-                inp=input_feat["mlp.gate_proj"],
-                module2inspect=module.mlp,
-            )
-        )
-
-        # linear 2
-        layers.append(
-            dict(
-                prev_op=module.mlp.up_proj,
-                layers=[module.mlp.down_proj],
-                inp=input_feat["mlp.down_proj"],
-            )
-        )
 
         return layers
 
@@ -102,39 +104,27 @@ class MistralFuser:
 
         module: OldMistralDecoderLayer
         for module in tqdm.tqdm(self.model.model.layers, desc="Fusing layers..."):
-            if not module.state_dict().values():
-                device = next(iter(module.state_dict().values())).device
-            else:
-                device = None
-            qkv = None
-            norm_1 = None
-            if hasattr(module, "drop_attn") and module.drop_attn:
-                pass
-            else:
-                qkv = fuse_qkv(
-                    module,
-                    module.self_attn.q_proj,
-                    module.self_attn.k_proj,
-                    module.self_attn.v_proj,
-                )
-                norm_1 = FasterTransformerRMSNorm(
-                    module.input_layernorm.weight, module.input_layernorm.variance_epsilon
-                )
-            norm_2 = None
-            if hasattr(module, "drop_mlp") and module.drop_mlp:
-                pass
-            else:
-                norm_2 = FasterTransformerRMSNorm(
-                    module.post_attention_layernorm.weight,
-                    module.post_attention_layernorm.variance_epsilon,
-                )
+            device = next(iter(module.state_dict().values())).device
+            qkv = fuse_qkv(
+                module,
+                module.self_attn.q_proj,
+                module.self_attn.k_proj,
+                module.self_attn.v_proj,
+            )
+            norm_1 = FasterTransformerRMSNorm(
+                module.input_layernorm.weight, module.input_layernorm.variance_epsilon
+            )
+            norm_2 = FasterTransformerRMSNorm(
+                module.post_attention_layernorm.weight,
+                module.post_attention_layernorm.variance_epsilon,
+            )
             blocks.append(
                 LlamaLikeBlock(
                     hidden_size=self.model.config.hidden_size,
                     n_heads=self.model.config.num_attention_heads,
                     n_kv_heads=self.model.config.num_key_value_heads,
                     qkv_layer=qkv,
-                    o_proj=module.self_attn.o_proj if qkv is not None else None,
+                    o_proj=module.self_attn.o_proj,
                     mlp=module.mlp,
                     norm_1=norm_1,
                     norm_2=norm_2,

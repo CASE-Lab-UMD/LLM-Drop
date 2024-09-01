@@ -26,23 +26,24 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class AwqQuantizer:
     def __init__(
-        self,
-        awq_model,
-        model,
-        tokenizer,
-        w_bit,
-        group_size,
-        zero_point,
-        version,
-        calib_data,
-        split,
-        text_column,
-        duo_scaling,
-        modules_to_not_convert=None,
-        export_compatible=False,
-        apply_clip=True,
+            self,
+            awq_model,
+            model,
+            tokenizer,
+            w_bit,
+            group_size,
+            zero_point,
+            version,
+            calib_data,
+            split,
+            text_column,
+            duo_scaling,
+            modules_to_not_convert=None,
+            export_compatible=False,
+            apply_clip=True,
     ) -> None:
         self.awq_model = awq_model
         self.model = model
@@ -74,13 +75,13 @@ class AwqQuantizer:
         if self.zero_point:
             max_val = w.amax(dim=1, keepdim=True)
             min_val = w.amin(dim=1, keepdim=True)
-            max_int = 2**self.w_bit - 1
+            max_int = 2 ** self.w_bit - 1
             min_int = 0
             scales = (max_val - min_val).clamp(min=1e-5) / max_int
             zeros = (-torch.round(min_val / scales)).clamp_(min_int, max_int)
             w = (
-                torch.clamp(torch.round(w / scales) + zeros, min_int, max_int) - zeros
-            ) * scales
+                        torch.clamp(torch.round(w / scales) + zeros, min_int, max_int) - zeros
+                ) * scales
             zeros = zeros.view(org_w_shape[0], -1)
         else:
             max_val = w.abs().amax(dim=1, keepdim=True)
@@ -100,7 +101,7 @@ class AwqQuantizer:
         return w, scales, zeros
 
     def pseudo_dequantize_tensor(
-        self, w: nn.Linear, scales: torch.Tensor, zeros: Optional[torch.Tensor] = None
+            self, w: nn.Linear, scales: torch.Tensor, zeros: Optional[torch.Tensor] = None
     ):
         # get repeated count
         repeat_count = w.weight.data.shape[-1] // scales.shape[-1]
@@ -117,8 +118,6 @@ class AwqQuantizer:
 
     def quantize(self):
         for i in tqdm(range(len(self.modules)), desc="AWQ"):
-        # for i in range(len(self.modules)):
-            # print('----')
             # Move module and inputs to correct device
             common_device = next(self.modules[i].parameters()).device
             if common_device is None or str(common_device) == "cpu":
@@ -149,8 +148,7 @@ class AwqQuantizer:
             named_linears = exclude_layers_to_not_quantize(
                 named_linears, self.modules_to_not_convert
             )
-            
-            print(f"named_linears: {named_linears}")
+
             input_feat = self._get_input_feat(self.modules[i], named_linears)
             clear_memory()
 
@@ -158,9 +156,6 @@ class AwqQuantizer:
             module_config: List[Dict] = self.awq_model.get_layers_for_scaling(
                 self.modules[i], input_feat, self.module_kwargs
             )
-            logger.info(f"module_config: {module_config}")
-            for layer in module_config:
-                logger.info(f"layer: {layer.keys()}")
             scales_list = [
                 self._search_best_scale(self.modules[i], **layer)
                 for layer in module_config
@@ -214,7 +209,7 @@ class AwqQuantizer:
 
             elif self.version == "marlin":
                 q_linear_module = WQLinear_Marlin
-            
+
             elif self.version == "gemv_fast":
                 q_linear_module = WQLinear_GEMVFast
 
@@ -237,13 +232,13 @@ class AwqQuantizer:
 
     @torch.no_grad()
     def _search_best_scale(
-        self,
-        module,
-        prev_op,
-        layers: List[nn.Linear],
-        inp: torch.Tensor,
-        module2inspect=None,
-        kwargs={},
+            self,
+            module,
+            prev_op,
+            layers: List[nn.Linear],
+            inp: torch.Tensor,
+            module2inspect=None,
+            kwargs={},
     ):
         if module2inspect is None:
             assert len(layers) == 1
@@ -261,7 +256,7 @@ class AwqQuantizer:
         org_shape = weight.shape
         # The weights are reshaped to be organised by quantization group
         weight = weight.view(-1, self.group_size)
-        # Calculates the relative magnitude of the weights within each of the quantization groups, 
+        # Calculates the relative magnitude of the weights within each of the quantization groups,
         # and rescales each group individually so that each group has weights on a 0-1 scale.
         w_scale = weight.abs() / weight.abs().amax(dim=1, keepdim=True)
         # Resizes the rescaled weight matrix back up to its original dimensions
@@ -293,14 +288,14 @@ class AwqQuantizer:
         )
 
     def _compute_best_scale(
-        self,
-        x,
-        w_mean,
-        x_mean,
-        module2inspect,
-        linears2scale: List[nn.Linear],
-        fp16_output,
-        kwargs={},
+            self,
+            x,
+            w_mean,
+            x_mean,
+            module2inspect,
+            linears2scale: List[nn.Linear],
+            fp16_output,
+            kwargs={},
     ):
         """
         Compute loss and select best scales
@@ -339,7 +334,7 @@ class AwqQuantizer:
             for fc in linears2scale:
                 fc.weight.mul_(scales_view)
                 fc.weight.data = (
-                    self.pseudo_quantize_tensor(fc.weight.data)[0] / scales_view
+                        self.pseudo_quantize_tensor(fc.weight.data)[0] / scales_view
                 )
 
             # W * X
@@ -388,12 +383,12 @@ class AwqQuantizer:
 
     @torch.no_grad()
     def _compute_best_clip(
-        self,
-        w: torch.Tensor,
-        input_feat: torch.Tensor,
-        n_grid=20,
-        max_shrink=0.5,
-        n_sample_token=512,
+            self,
+            w: torch.Tensor,
+            input_feat: torch.Tensor,
+            n_grid=20,
+            max_shrink=0.5,
+            n_sample_token=512,
     ):
         assert w.dim() == 2
         org_w_shape = w.shape
@@ -402,7 +397,7 @@ class AwqQuantizer:
         group_size = self.group_size if self.group_size > 0 else org_w_shape[1]
         input_feat = input_feat.view(-1, input_feat.shape[-1])
         input_feat = input_feat.reshape(1, input_feat.shape[0], -1, group_size)
-        input_feat = input_feat[:, 0 :: input_feat.shape[1] // n_sample_token]
+        input_feat = input_feat[:, 0:: input_feat.shape[1] // n_sample_token]
         w = w.reshape(org_w_shape[0], 1, -1, group_size)
 
         oc_batch_size = 256 if org_w_shape[0] % 256 == 0 else 64  # prevent OOM
@@ -411,7 +406,7 @@ class AwqQuantizer:
         best_max_val_all = []
 
         for i_b in range(org_w_shape[0] // oc_batch_size):
-            w = w_all[i_b * oc_batch_size : (i_b + 1) * oc_batch_size]
+            w = w_all[i_b * oc_batch_size: (i_b + 1) * oc_batch_size]
 
             org_max_val = w.abs().amax(dim=-1, keepdim=True)  # co, 1, n_group, 1
 
@@ -522,17 +517,6 @@ class AwqQuantizer:
         input_feat = defaultdict(list)
         handles = []
 
-        # FIXME: Workaround for Mixtral to use block_sparse_moe input features
-        if self.awq_model.model_type == "mixtral":
-            named_linears = {
-                **named_linears,
-                "block_sparse_moe": layer.block_sparse_moe,
-            }
-        elif self.awq_model.model_type == "deepseek":     
-            named_linears = {
-                **named_linears,
-                "mlp": layer.mlp,
-            }
         for name in named_linears:
             handles.append(
                 named_linears[name].register_forward_hook(
@@ -546,7 +530,6 @@ class AwqQuantizer:
         # kwargs that are not handled by the module.
         # Useful for trust_remote_code models.
         module_kwargs = self._sanitize_kwargs(self.module_kwargs, layer)
-
         self.inps = layer(self.inps, **module_kwargs)[0]
         for h in handles:
             h.remove()
