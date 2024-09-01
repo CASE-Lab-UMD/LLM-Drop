@@ -147,22 +147,45 @@ class LlamaConfig(PretrainedConfig):
         self.num_hidden_layers = num_hidden_layers
         self.num_attention_heads = num_attention_heads
 
-        if drop_mlp_list:
+        #####################################################################################################################
+
+        # ✨ trans bool into int
+        new_drop_attn_list = []
+        if drop_attn_list is not None:
+            for idx in range(len(drop_attn_list)):
+                if isinstance(drop_attn_list[idx], bool):
+                    if drop_attn_list[idx] == True:
+                        new_drop_attn_list.append(idx)
+                elif isinstance(drop_attn_list[idx], int):
+                    new_drop_attn_list.append(drop_attn_list[idx])
+
+        # if drop_mlp_list is not None and not isinstance(drop_mlp_list[0], int):
+        new_drop_mlp_list = []
+        if drop_mlp_list is not None:
+            for idx in range(len(drop_mlp_list)):
+                if isinstance(drop_mlp_list[idx], bool):
+                    if drop_mlp_list[idx] == True:
+                        new_drop_mlp_list.append(idx)
+                elif isinstance(drop_mlp_list[idx], int):
+                    new_drop_mlp_list.append(drop_mlp_list[idx])
+
+        #####################################################################################################################
+
+        if new_drop_mlp_list:
             self.drop_mlp_list = []
             for idx in range(self.num_hidden_layers):
-                self.drop_mlp_list.append(True if idx in drop_mlp_list else False)
+                self.drop_mlp_list.append(True if idx in new_drop_mlp_list else False)
         else:
             self.drop_mlp_list = [False] * self.num_hidden_layers
 
-        if drop_attn_list:
+        if new_drop_attn_list:
             self.drop_attn_list = []
             for idx in range(self.num_hidden_layers):
-                self.drop_attn_list.append(True if idx in drop_attn_list else False)
+                self.drop_attn_list.append(True if idx in new_drop_attn_list else False)
         else:
             self.drop_attn_list = [False] * self.num_hidden_layers
 
-        print(self.drop_attn_list)
-        print(self.drop_mlp_list)
+        #####################################################################################################################
 
         # for backward compatibility
         if num_key_value_heads is None:
