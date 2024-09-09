@@ -15,6 +15,11 @@ Our findings are informative for the ML community and provide insights for futur
 
 ![Layer-Drop.svg](Layer_Drop.svg)
 
+## News
+- **Sep 2024**: Released checkpoints for [dropped models](https://huggingface.co/collections/LLM-Drop/llm-drop-66dde616140f04eb18424a0a) using Block Drop and Layer Drop.  
+- **Jun 2024**: Published preprint on [arXiv](https://arxiv.org/abs/2406.15786) along with the related codebase.
+
+
 ## Quick Start
 
 #### Installation
