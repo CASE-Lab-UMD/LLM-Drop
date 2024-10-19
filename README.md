@@ -28,7 +28,7 @@ Our findings are informative for the ML community and provide insights for futur
 conda create -n llm-drop python=3.10
 conda activate llm-drop
 
-git clone git@github.com:CASE-Lab-UMD/LLM-Drop.git
+git clone https://github.com/CASE-Lab-UMD/LLM-Drop
 
 #For Dropping:
 cd ./LLM-Drop
