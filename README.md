@@ -55,7 +55,7 @@ Take Mistral-7B as an example:
     "AutoModelForCausalLM": "modeling_dropped_mistral.MistralForCausalLM"
   },
 ```
-Additionally, the key ``drop_attn_list`` and ``drop_mlp_list`` respectively mark which Attention layers and MLPs should be dropped based on their layer index. Take Mistral-7B as an example: 
+Additionally, the key ``drop_attn_list`` and ``drop_mlp_list`` respectively mark which Attention layers and MLPs should be dropped based on their layer index. For instance, 
 
 #### Drop 4 Attention layers:
 ```json
@@ -89,6 +89,7 @@ bash scripts/dropping/layer_drop.sh
 ```bash
 bash scripts/dropping/layer_drop_joint.sh
 ```
+These bash scripts will generate the importance scores for blocks/layers, determine which blocks/layers to retain, and create new model configuration files indicating the dropped modules.
 
 ## Benchmarks
 #### Performance
