@@ -47,8 +47,7 @@ def get_block_similarities(model, dataloader: DataLoader, accelerator: Accelerat
         layers = unwrapped_model.model.layers
 
         accelerator.print("Getting features...")
-        inputs, outputs, attention_mask, position_ids = prepare_calibration_input(unwrapped_model, dataloader,
-                                                                                  num_samples)  # 🔍
+        inputs, outputs, attention_mask, position_ids, cache_position = prepare_calibration_input(unwrapped_model, dataloader, num_samples)  # 🔍
         num_layers = unwrapped_model.config.num_hidden_layers
         # 🔍 Initialize the similarities.
         # Row: each layer
