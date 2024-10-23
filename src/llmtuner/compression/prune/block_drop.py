@@ -119,10 +119,6 @@ def get_block_similarities_consecutive(model, dataloader: DataLoader, accelerato
         inputs, outputs, attention_mask, position_ids, cache_position = prepare_calibration_input(unwrapped_model, dataloader, num_samples)  # 🔍
 
         # 🔍 Get layer ids
-        if isinstance(unwrapped_model, MixtralPreTrainedModel):
-            num_layers = unwrapped_model.config.num_hidden_layers
-        # elif isinstance(unwrapped_model, DeepseekPreTrainedModel):
-        #     num_layers = unwrapped_model.config.num_hidden_layers
         num_layers = unwrapped_model.config.num_hidden_layers
         # 🔍 Initialize the similarities.
         # Row: each layer
