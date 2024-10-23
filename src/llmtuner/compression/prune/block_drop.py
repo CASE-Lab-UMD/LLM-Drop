@@ -15,7 +15,6 @@ from tqdm import tqdm
 from .io import create_dir
 from llmtuner.compression.prune.utils import prepare_calibration_input, print_gpu_memory
 from llmtuner.compression.prune.wrapper import HiddenStatesRecordWrapper
-from transformers.models.mixtral.modeling_mixtral import MixtralForCausalLM, MixtralPreTrainedModel
 
 CUSTOM_FILE ={
     "llama": {
@@ -216,7 +215,7 @@ def get_top_k(similarities, k, tolerance):
         similarities[max_index] = 0
     return dropped_sim_list, dropped_layer_list
 
-def consecutive_block_dropping(args: Namespace, model: MixtralForCausalLM, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
+def consecutive_block_dropping(args: Namespace, model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
     """
     🔍 Prune blocks in a consecutive order.
     E.g., [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] -> [0, 1, 7, 8, 9]

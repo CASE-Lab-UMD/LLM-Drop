@@ -14,7 +14,6 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from .io import create_dir
-from transformers.models.mixtral.modeling_mixtral import MixtralForCausalLM, MixtralPreTrainedModel
 from .utils import print_gpu_memory, prepare_calibration_input
 from .wrapper import HiddenStatesRecordWrapper
 
@@ -155,7 +154,7 @@ def get_layer_similarities(model, dataloader: DataLoader, accelerator: Accelerat
     return similarities
 
 #  🔍 find indices of dropped layers
-def discrete_layer_dropping(args: Namespace, model: MixtralForCausalLM, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
+def discrete_layer_dropping(args: Namespace, model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
     """
     🔍 Prune mlp layers in a discrete order.
     E.g., [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] -> [0, 2, 6, 8, 9]
