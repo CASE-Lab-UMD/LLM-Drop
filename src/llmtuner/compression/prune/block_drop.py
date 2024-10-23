@@ -2,7 +2,6 @@ import logging
 import math
 import os
 import sys
-from argparse import Namespace
 from copy import deepcopy
 import shutil
 import torch
@@ -215,7 +214,7 @@ def get_top_k(similarities, k, tolerance):
         similarities[max_index] = 0
     return dropped_sim_list, dropped_layer_list
 
-def consecutive_block_dropping(args: Namespace, model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
+def consecutive_block_dropping(args, model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
     """
     🔍 Prune blocks in a consecutive order.
     E.g., [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] -> [0, 1, 7, 8, 9]
@@ -235,7 +234,7 @@ def consecutive_block_dropping(args: Namespace, model, dataloader: DataLoader, a
     return dropped_layer_list
 
 
-def discrete_block_dropping(args: Namespace, model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
+def discrete_block_dropping(args, model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
     """
     🔍 Prune blocks in a discrete order.
     E.g., [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] -> [0, 2, 6, 8, 9]

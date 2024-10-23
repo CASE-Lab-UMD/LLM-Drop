@@ -2,7 +2,6 @@ import logging
 import math
 import os
 import sys
-from argparse import Namespace
 import shutil
 from copy import deepcopy
 
@@ -154,7 +153,7 @@ def get_layer_similarities(model, dataloader: DataLoader, accelerator: Accelerat
     return similarities
 
 #  🔍 find indices of dropped layers
-def discrete_layer_dropping(args: Namespace, model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
+def discrete_layer_dropping(args, model, dataloader: DataLoader, accelerator: Accelerator, num_samples: int):
     """
     🔍 Prune mlp layers in a discrete order.
     E.g., [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] -> [0, 2, 6, 8, 9]
