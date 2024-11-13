@@ -27,7 +27,7 @@ for ((epoch=1; epoch<=num_epochs; epoch++)) do
   prune_model_save_path=${output_dir}/checkpoint
 
   CUDA_VISIBLE_DEVICES=$GPUs accelerate launch --main_process_port $port \
-    src/train_bash.py \
+    src/compress.py \
     --stage prune \
     --model_name_or_path ${model_name_or_path} \
     --dataset ${dataset} \
@@ -52,7 +52,7 @@ for ((epoch=1; epoch<=num_epochs; epoch++)) do
   # set only_update_config to True to save the disk memory
   only_update_config=False
 
-  python src/train_bash.py \
+  python src/compress.py \
     --stage prune \
     --model_name_or_path ${model_name_or_path} \
     --dataset ${dataset} \
