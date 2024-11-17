@@ -136,3 +136,37 @@ def prepare_calibration_input(model, dataloader, num_samples=16):
     layers[0] = layers[0].module
     outputs = [None] * len(cache['inputs'])
     return cache['inputs'], outputs, cache['attention_mask'], cache['position_ids'], cache['cache_position']
+
+
+
+auto_map = {
+    "llama": {
+                "AutoConfig": "configuration_dropped_llama.LlamaConfig",
+                "AutoModelForCausalLM": "modeling_dropped_llama.LlamaForCausalLM"
+            }, 
+    "mistral": {
+                "AutoConfig": "configuration_dropped_mistral.MistralConfig",
+                "AutoModelForCausalLM": "modeling_dropped_mistral.MistralForCausalLM"
+            },
+    "deepseek":
+                {
+                "AutoConfig": "configuration_deepseek.DeepseekConfig",
+                "AutoModelForCausalLM": "modeling_dropped_deepseek.DeepseekForCausalLM"
+                },
+}
+
+
+CUSTOM_FILE ={
+    "llama": {
+        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_llama.py"),
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_llama.py")
+    },
+    "mistral": {
+        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_mistral.py"),
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_mistral.py")
+    },
+    "deepseek": {
+        "config": os.path.join(os.path.dirname(__file__), "models/configuration_deepseek.py"),
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_deepseek.py")
+    }, 
+}

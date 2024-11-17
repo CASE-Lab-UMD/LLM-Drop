@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from .io import create_dir
-from .utils import print_gpu_memory, prepare_calibration_input
+from .utils import print_gpu_memory, prepare_calibration_input, auto_map, CUSTOM_FILE
 from .wrapper import HiddenStatesRecordWrapper
 
 
@@ -179,18 +179,10 @@ def post_layers_drop(prune_model_save_path, target_layer, model, tokenizer, rese
 
     if accelerator.is_main_process:
         out_cfg = deepcopy(unwrapped_model.config)
-        if getattr(unwrapped_model.config, "model_type", None) == "llama":
-            out_cfg.auto_map = {
-                "AutoConfig": "configuration_dropped_llama.LlamaConfig",
-                "AutoModelForCausalLM": "modeling_dropped_llama.LlamaForCausalLM"
-            }
+        model_type = getattr(unwrapped_model.config, "model_type", None)
 
-        elif getattr(unwrapped_model.config, "model_type", None) == "mistral":
-            out_cfg.auto_map = {
-                "AutoConfig": "configuration_dropped_mistral.MistralConfig",
-                "AutoModelForCausalLM": "modeling_dropped_mistral.MistralForCausalLM"
-            }
-
+        if model_type in auto_map:
+            out_cfg.auto_map = auto_map[model_type]
         else:
             raise ValueError("Unsupported model type!")
         dropped_attn_list = []

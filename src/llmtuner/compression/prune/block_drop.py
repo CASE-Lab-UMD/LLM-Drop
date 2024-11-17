@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from .io import create_dir
-from llmtuner.compression.prune.utils import prepare_calibration_input, print_gpu_memory
+from llmtuner.compression.prune.utils import prepare_calibration_input, print_gpu_memory, auto_map, CUSTOM_FILE
 from llmtuner.compression.prune.wrapper import HiddenStatesRecordWrapper
 
 CUSTOM_FILE ={
@@ -254,18 +254,10 @@ def post_block_drop(prune_model_save_path, model, tokenizer, reserved_layer_list
 
     if accelerator.is_main_process:
         out_cfg = deepcopy(unwrapped_model.config)
-        if getattr(unwrapped_model.config, "model_type", None) == "llama":
-            out_cfg.auto_map = {
-                "AutoConfig": "configuration_dropped_llama.LlamaConfig",
-                "AutoModelForCausalLM": "modeling_dropped_llama.LlamaForCausalLM"
-            }
+        model_type = getattr(unwrapped_model.config, "model_type", None)
 
-        elif getattr(unwrapped_model.config, "model_type", None) == "mistral":
-            out_cfg.auto_map = {
-                "AutoConfig": "configuration_dropped_mistral.MistralConfig",
-                "AutoModelForCausalLM": "modeling_dropped_mistral.MistralForCausalLM"
-            }
-
+        if model_type in auto_map:
+            out_cfg.auto_map = auto_map[model_type]
         else:
             raise ValueError("Unsupported model type!")
 
