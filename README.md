@@ -16,6 +16,7 @@ Our findings are informative for the ML community and provide insights for futur
 ![Layer-Drop.svg](Layer_Drop.svg)
 
 ## News
+- **Nov 2024**: Updated the code to support additional language models, including [Gemma2](https://arxiv.org/abs/2408.00118), [Baichuan](https://arxiv.org/abs/2309.10305), [DeepSeek](https://arxiv.org/abs/2401.06066), [Yi](https://arxiv.org/abs/2403.04652), [Solar](https://arxiv.org/abs/2312.15166). Yi and Solar refer to Llama, and we checked their availability.
 - **Sep 2024**: Released checkpoints for [dropped models](https://huggingface.co/collections/LLM-Drop/llm-drop-66dde616140f04eb18424a0a) using Block Drop and Layer Drop.  
 - **Jun 2024**: Published preprint on [arXiv](https://arxiv.org/abs/2406.15786) along with the related codebase.
 

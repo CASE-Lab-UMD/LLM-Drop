@@ -16,18 +16,6 @@ from .io import create_dir
 from .utils import print_gpu_memory, prepare_calibration_input, auto_map, CUSTOM_FILE
 from .wrapper import HiddenStatesRecordWrapper
 
-
-CUSTOM_FILE ={
-    "llama": {
-        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_llama.py"),
-        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_llama.py")
-    },
-    "mistral": {
-        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_mistral.py"),
-        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_mistral.py")
-    },
-}
-
 logger = logging.getLogger(__name__)
 
 #  🔍 compute similarity

@@ -1,6 +1,6 @@
 import torch
 from torch import nn as nn, cuda
-
+import os
 
 def print_gpu_memory(accelerator):
     if accelerator.is_local_main_process:  # 🔍
@@ -153,8 +153,17 @@ auto_map = {
                 "AutoConfig": "configuration_deepseek.DeepseekConfig",
                 "AutoModelForCausalLM": "modeling_dropped_deepseek.DeepseekForCausalLM"
                 },
+    "gemma2":
+                {
+                "AutoConfig": "configuration_dropped_gemma2.Gemma2Config",
+                "AutoModelForCausalLM": "modeling_dropped_gemma2.Gemma2ForCausalLM"
+                },
+    "baichuan":
+                {
+                "AutoConfig": "configuration_dropped_baichuan.BaichuanConfig",
+                "AutoModelForCausalLM": "modeling_dropped_baichuan.BaichuanForCausalLM"
+                }
 }
-
 
 CUSTOM_FILE ={
     "llama": {
@@ -169,4 +178,12 @@ CUSTOM_FILE ={
         "config": os.path.join(os.path.dirname(__file__), "models/configuration_deepseek.py"),
         "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_deepseek.py")
     }, 
+    "gemma2": {
+        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_gemma2.py"),
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_gemma2.py")
+    }, 
+    "baichuan": {
+        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_baichuan.py"),
+        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_baichuan.py")
+    }
 }
