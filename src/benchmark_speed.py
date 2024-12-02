@@ -5,24 +5,12 @@ import time
 import numpy as np
 import pandas as pd
 import torch
-from transformers import AutoTokenizer, AutoConfig, AutoModel, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import GenerationConfig, LogitsProcessor, LogitsProcessorList
 
 from auto_gptq import AutoGPTQForCausalLM, BaseQuantizeConfig
 from awq import AutoAWQForCausalLM, BaseAWQForCausalLM
-from llmtuner.model.deepseek.configuration_deepseek import DeepseekConfig
-from llmtuner.model.deepseek.modeling_deepseek import DeepseekModel, DeepseekForCausalLM
-from llmtuner.model.mixtral.configuration_mixtral import MixtralConfig
-from llmtuner.model.mixtral.modeling_mixtral import MixtralModel, MixtralForCausalLM
 from llmtuner.compression.prune.io import create_dir
-
-AutoConfig.register("deepseek", DeepseekConfig)
-AutoModel.register(DeepseekConfig, DeepseekModel)
-AutoModelForCausalLM.register(DeepseekConfig, DeepseekForCausalLM)
-
-AutoConfig.register("mixtral", MixtralConfig, exist_ok=True)
-AutoModel.register(MixtralConfig, MixtralModel, exist_ok=True)
-AutoModelForCausalLM.register(MixtralConfig, MixtralForCausalLM, exist_ok=True)
 
 
 class TimeMeasuringLogitsProcessor(LogitsProcessor):
