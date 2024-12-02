@@ -12,19 +12,8 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from .io import create_dir
-from llmtuner.compression.prune.utils import prepare_calibration_input, print_gpu_memory, auto_map, CUSTOM_FILE
-from llmtuner.compression.prune.wrapper import HiddenStatesRecordWrapper
-
-CUSTOM_FILE ={
-    "llama": {
-        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_llama.py"),
-        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_llama.py")
-    },
-    "mistral": {
-        "config": os.path.join(os.path.dirname(__file__), "models/configuration_dropped_mistral.py"),
-        "model": os.path.join(os.path.dirname(__file__), "models/modeling_dropped_mistral.py")
-    },
-}
+from .utils import prepare_calibration_input, print_gpu_memory, auto_map, CUSTOM_FILE
+from .wrapper import HiddenStatesRecordWrapper
 
 logger = logging.getLogger(__name__)
 
