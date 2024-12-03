@@ -106,6 +106,7 @@ def load_model(model_path, model_type, quant_file, n_generate, batch_size, no_sa
             low_cpu_mem_usage=True,
             device_map="auto",
             torch_dtype=torch.bfloat16,
+            trust_remote_code=True,
         )
 
     elif model_type == "quantized":
@@ -115,6 +116,7 @@ def load_model(model_path, model_type, quant_file, n_generate, batch_size, no_sa
                 model_path, quant_file, fuse_layers=True,
                 max_seq_len=n_generate, batch_size=batch_size,
                 safetensors=not no_safetensors
+                trust_remote_code=True,
             )
         # GPTQ
         else:
@@ -126,18 +128,14 @@ def load_model(model_path, model_type, quant_file, n_generate, batch_size, no_sa
             use_safetensors = True
             model = AutoGPTQForCausalLM.from_quantized(
                 model_path,
-                # max_memory=max_memory,
                 low_cpu_mem_usage=True,
                 use_triton=use_triton,
                 inject_fused_attention=inject_fused_attention,
                 inject_fused_mlp=inject_fused_mlp,
                 use_cuda_fp16=True,
                 quantize_config=quantize_config,
-                # model_basename=model_basename,
                 use_safetensors=use_safetensors,
-                # trust_remote_code=trust_remote_code,
-                # warmup_triton=False,
-                # disable_exllama=disable_exllama,
+                trust_remote_code=True,
             )
             setattr(model, "quant_config", quantize_config)
     else:
@@ -242,7 +240,8 @@ def main(args):
             args.batch_size,
             args.no_safetensors,
             args.pretrained,
-            model=model,
+            model=model, 
+            trust_remote_code=True, 
         )
 
         stats, model_version = run_round(
