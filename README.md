@@ -1,141 +1,175 @@
-## What Matters in Transformers? Not All Attention is Needed
+<h1 align="center">Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping</h1>
 
-**[Shwai He](https://shwai-he.github.io/)\*, Guoheng Sun\*, Zheyu Shen, [Ang Li](https://www.ang-li.com/)**
+<p align="center">
+  <a href="https://openreview.net/forum?id=1I7PCbOPfe"><img src="https://img.shields.io/badge/Paper-OpenReview-8A2BE2" alt="OpenReview"></a>
+  <img src="https://img.shields.io/badge/Python-3.10+-green" alt="Python 3.10+">
+</p>
 
-**This is the official implementation of the paper [What Matters in Transformers? Not All Attention is Needed
-](https://arxiv.org/abs/2406.15786).** We conduct extensive experiments and analysis to reveal the architecture redundancy within transformer-based Large Language Models (LLMs). 
-Pipeline for Block Drop and Layer Drop is based on the [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory).
-The quantization is implemented based on the [AutoAWQ](https://github.com/casper-hansen/AutoAWQ) and [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ).
+<p align="center">
+  <a href="#-news">📰 News</a> •
+  <a href="#-installation">⚙️ Installation</a> •
+  <a href="#-repository-layout">📦 Layout</a> •
+  <a href="#-prepare-models">🧰 Models</a> •
+  <a href="#-benchmark">📊 Benchmark</a> •
+  <a href="#-citation">📄 Citation</a>
+</p>
 
-## Introduction
-Transformer-based large language models (LLMs) often contain architectural redundancies. In this work, we systematically investigate redundancy across different types of modules, including Blocks, Attention layers, and MLP layers. Surprisingly, we found that Attention layers, the core component of transformers, are particularly redundant. For example, in the Llama-3-70B model, **half of the Attention layers can be dropped** while maintaining performance. 
-Our observations indicate that this redundancy in Attention layers persists throughout the training process, necessitating Attention Drop.
-Additionally, dropping Attention layers significantly enhances computational and memory efficiency. 
-Our findings are informative for the ML community and provide insights for future architecture design.
+<p align="center">
+  <a href="https://shwai-he.github.io/">Shwai He</a>\*, Guoheng Sun\*, Zheyu Shen, <a href="https://www.ang-li.com/">Ang Li</a>
+</p>
+
+## 📖 Introduction
+
+This is the official implementation for the paper [**Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping**](https://openreview.net/forum?id=1I7PCbOPfe).
+
+This work is also related to our Qualcomm Innovation Fellowship project, *Less Attention, Much Faster: Toward a Future of Efficiency-Optimized Transformer Architectures*.
+
+This project studies architectural redundancy in Transformer-based LLMs and provides practical pipelines for:
+- Block Drop
+- Layer Drop (Attention/MLP)
+- Joint Layer Drop
+- Post-training quantization (AWQ/GPTQ)
+
+The dropping pipeline is built on [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory). Quantization support is built on [AutoAWQ](https://github.com/casper-hansen/AutoAWQ) and [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ).
 
 ![Layer-Drop.svg](Layer_Drop.svg)
 
-## News
-- **Nov 2024**: Updated the code to support additional language models, including [Gemma2](https://arxiv.org/abs/2408.00118), [Baichuan](https://arxiv.org/abs/2309.10305), [DeepSeek](https://arxiv.org/abs/2401.06066), [Yi](https://arxiv.org/abs/2403.04652), [Solar](https://arxiv.org/abs/2312.15166). Yi and Solar refer to Llama, and we checked their availability.
-- **Sep 2024**: Released checkpoints for [dropped models](https://huggingface.co/collections/LLM-Drop/llm-drop-66dde616140f04eb18424a0a) using Block Drop and Layer Drop.  
-- **Jun 2024**: Published preprint on [arXiv](https://arxiv.org/abs/2406.15786) along with the related codebase.
+## 📰 News
+- Feb 2026: This paper is published in **Transactions on Machine Learning Research (TMLR)**.
+- May 2025: 🏆 Awarded the Qualcomm Innovation Fellowship (QIF) North America for the proposal “Less Attention, Much Faster: Toward a Future of Efficiency-Optimized Transformer Architectures.”
+- Nov 2024: Added support for more model families (Gemma2, Baichuan, DeepSeek, Yi, Solar).
+- Sep 2024: Released dropped-model checkpoints in this [Hugging Face collection](https://huggingface.co/collections/LLM-Drop/llm-drop-66dde616140f04eb18424a0a).
+- Jun 2024: Released arXiv preprint and code.
 
-
-## Quick Start
-
-#### Installation
+## ⚙️ Installation
 
 ```bash
-conda create -n llm-drop python=3.10
+conda create -n llm-drop python=3.10 -y
 conda activate llm-drop
 
-git clone https://github.com/CASE-Lab-UMD/LLM-Drop
+git clone https://github.com/CASE-Lab-UMD/LLM-Drop.git
+cd LLM-Drop
 
-#For Dropping:
-cd ./LLM-Drop
+# Core dropping pipeline
 pip install -e .
 
-#For Quantization:
-cd ./src/llmtuner/compression/quantization/AutoAWQ
+# Quantization dependencies (optional)
+cd src/llmtuner/compression/quantization/AutoAWQ
 pip install -e .
 
-cd ./src/llmtuner/compression/quantization/AutoAWQ/AutoAWQ_kernels
+cd AutoAWQ_kernels
 pip install -e .
 
-cd ./src/llmtuner/compression/quantization/AutoGPTQ
+cd ../../AutoGPTQ
 pip install -vvv --no-build-isolation -e .
+
+cd ../../../../../..
 ```
 
-## Prepare Models
-Download the models (e.g., Mistral-7B, Llama-2 and Llama-3) from HuggingFace. We create [new config and modeling files](https://github.com/Shwai-He/LLM-Drop/tree/main/src/llmtuner/compression/prune/models) to represent the models by layers or blocks. 
-The key ``auto_map`` needs to be added in the config.json to utilize the new files. 
-Take Mistral-7B as an example: 
+## 📦 Repository Layout
+
+- `src/compress.py`: main entry for dropping/compression workflow.
+- `scripts/dropping/*.sh`: example scripts for block/layer dropping.
+- `scripts/benchmark/benchmark_lm_eval.sh`: LM-Eval benchmark script.
+- `scripts/benchmark/benchmark_speed.sh`: speed benchmark wrapper.
+- `src/benchmark_speed.py`: speed benchmarking implementation.
+- `scripts/quantization/*.sh`: AWQ/GPTQ quantization examples.
+
+## 🧰 Prepare Models
+
+1. Download a base model from Hugging Face (for example `mistralai/Mistral-7B-v0.1`).
+2. Add `auto_map` in the model `config.json` so Transformers can load custom dropped-model classes.
+3. Set drop lists in `config.json`:
+
+- Drop attention layers:
+```json
+"drop_mlp_list": [],
+"drop_attn_list": [25, 26, 24, 22]
+```
+
+- Drop MLP layers:
+```json
+"drop_mlp_list": [26, 27, 25, 24],
+"drop_attn_list": []
+```
+
+- Drop full blocks:
+```json
+"drop_mlp_list": [26, 25, 24, 27],
+"drop_attn_list": [26, 25, 24, 27]
+```
+
+Example `auto_map` for Mistral:
 ```json
 "auto_map": {
-    "AutoConfig": "configuration_dropped_mistral.MistralConfig",
-    "AutoModelForCausalLM": "modeling_dropped_mistral.MistralForCausalLM"
-  },
-```
-Additionally, the key ``drop_attn_list`` and ``drop_mlp_list`` respectively mark which Attention layers and MLPs should be dropped based on their layer index. For instance, 
-
-#### Drop 4 Attention layers:
-```json
- "drop_mlp_list": [],
- "drop_attn_list": [25, 26, 24, 22],
-```
-#### Drop 4 MLPs layers:
-```json
- "drop_mlp_list": [26, 27, 25, 24],
- "drop_attn_list": [],
-```
-#### Drop 4 Blocks:
-```json
- "drop_mlp_list": [26, 25, 24, 27],
- "drop_attn_list": [26, 25, 24, 27],
+  "AutoConfig": "configuration_dropped_mistral.MistralConfig",
+  "AutoModelForCausalLM": "modeling_dropped_mistral.MistralForCausalLM"
+}
 ```
 
-## Run Dropping
+See model files under `src/llmtuner/compression/prune/models`.
 
-#### Block Drop
+## 🚀 Run Dropping
+
 ```bash
+# Block Drop
 bash scripts/dropping/block_drop.sh
-```
 
-#### Layer Drop
-```bash
+# Layer Drop
 bash scripts/dropping/layer_drop.sh
-```
 
-#### Joint Layer Drop
-```bash
+# Joint Layer Drop
 bash scripts/dropping/layer_drop_joint.sh
 ```
-These bash scripts will generate the importance scores for blocks/layers, determine which blocks/layers to retain, and create new model configuration files indicating the dropped modules.
 
-## Benchmarks
-#### Performance
-Evaluate the performance of the model with dropping some modules on specific tasks:
+These scripts estimate module importance, select layers/blocks to drop, and generate updated model configs/checkpoints.
+
+## 📊 Benchmark
+
+### 🧪 1) Task Performance
+
 ```bash
 bash scripts/benchmark/benchmark_lm_eval.sh
 ```
 
-The evaluation code is based on [EleutherAI/lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness). To fully reproduce our results, please use [this version](https://github.com/s1ghhh/lm-evaluation-harness). It samples few-shot based on the index of the samples, avoiding the issue of result variation with the number of processes during data parallel inference.
-Remember to use the modeling files in `src/llmtuner/model` to load the Mistral and Llama models.
+Notes:
+- This benchmark depends on [EleutherAI/lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness).
+- For strict reproduction, the repo uses this fork: [s1ghhh/lm-evaluation-harness](https://github.com/s1ghhh/lm-evaluation-harness).
+- Use modeling files in `src/llmtuner/model` when loading Mistral/Llama with dropped configs.
 
-#### SpeedUp
-Evaluate the speedup ratio of the model with dropping some modules:
+### ⚡ 2) Inference Speed
+
 ```bash
 bash scripts/benchmark/benchmark_speed.sh
 ```
 
-#### Quantization
-Please refer to [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ) and [AutoAWQ](https://github.com/casper-hansen/AutoAWQ). Ensure you carefully install the packages that correspond to your CUDA version.
-For quantization, use the following scripts:
+Before running, edit placeholders in `scripts/benchmark/benchmark_speed.sh`:
+- `model_path`
+- `save_file`
+- `model_type`
+
+### 🧊 3) Quantization
+
 ```bash
 bash scripts/quantization/awq.sh
 bash scripts/quantization/gptq.sh
 ```
 
-[//]: # (## Experiments)
+Before running, edit placeholders in those scripts (`model_path`, `quant_path`) and ensure CUDA-compatible package versions.
 
-## Citation
+## 📄 Citation
 
-```latex
-@misc{he2024matterstransformersattentionneeded,
-      title={What Matters in Transformers? Not All Attention is Needed}, 
-      author={Shwai He and Guoheng Sun and Zheyu Shen and Ang Li},
-      year={2024},
-      eprint={2406.15786},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2406.15786}, 
+```bibtex
+@misc{he2024uncoveringredundancytransformers,
+  title={Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping},
+  author={Shwai He and Guoheng Sun and Zheyu Shen and Ang Li},
+  year={2024},
+  howpublished={OpenReview},
+  url={https://openreview.net/forum?id=1I7PCbOPfe}
 }
 ```
 
-## Contact Us
+## 📬 Contact
 
-If you have any questions, please contact:
-
-- Shwai He: shwaihe@umd.edu
-
-- Guoheng Sun: ghsun@umd.edu
+- Shwai He: `shwaihe@umd.edu`
+- Guoheng Sun: `ghsun@umd.edu`
