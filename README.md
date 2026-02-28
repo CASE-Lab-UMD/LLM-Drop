@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <a href="https://shwai-he.github.io/">Shwai He</a>\*, Guoheng Sun\*, Zheyu Shen, <a href="https://www.ang-li.com/">Ang Li</a>
+  <a href="https://shwai-he.github.io/">Shwai He*</a>, <a href="https://s1ghhh.github.io/">Guoheng Sun*</a>, <a href="https://shenzheyu.github.io/">Zheyu Shen</a>, <a href="https://www.ang-li.com/">Ang Li</a>
 </p>
 
 ## 📖 Introduction
