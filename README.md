@@ -6,6 +6,10 @@
 </p>
 
 <p align="center">
+  <a href="https://shwai-he.github.io/">Shwai He*</a>, <a href="https://s1ghhh.github.io/">Guoheng Sun*</a>, <a href="https://shenzheyu.github.io/">Zheyu Shen</a>, <a href="https://www.ang-li.com/">Ang Li</a>
+</p>
+
+<p align="center">
   <a href="#-news">📰 News</a> •
   <a href="#-installation">⚙️ Installation</a> •
   <a href="#-repository-layout">📦 Layout</a> •
@@ -14,15 +18,9 @@
   <a href="#-citation">📄 Citation</a>
 </p>
 
-<p align="center">
-  <a href="https://shwai-he.github.io/">Shwai He*</a>, <a href="https://s1ghhh.github.io/">Guoheng Sun*</a>, <a href="https://shenzheyu.github.io/">Zheyu Shen</a>, <a href="https://www.ang-li.com/">Ang Li</a>
-</p>
-
 ## 📖 Introduction
 
-This is the official implementation for the paper [**Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping**](https://openreview.net/forum?id=1I7PCbOPfe).
-
-This work is also related to our Qualcomm Innovation Fellowship project, *Less Attention, Much Faster: Toward a Future of Efficiency-Optimized Transformer Architectures*.
+This is the official implementation for the paper [**Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping**](https://openreview.net/forum?id=1I7PCbOPfe) (**TMLR**).
 
 This project studies architectural redundancy in Transformer-based LLMs and provides practical pipelines for:
 - Block Drop
