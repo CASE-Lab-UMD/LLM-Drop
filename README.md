@@ -2,6 +2,7 @@
 
 <p align="center">
   <a href="https://openreview.net/forum?id=1I7PCbOPfe"><img src="https://img.shields.io/badge/Paper-OpenReview-8A2BE2" alt="OpenReview"></a>
+  <img src="https://img.shields.io/badge/TMLR-2026-0B7285" alt="TMLR 2026">
   <img src="https://img.shields.io/badge/Python-3.10+-green" alt="Python 3.10+">
 </p>
 
@@ -18,9 +19,9 @@
   <a href="#-citation">📄 Citation</a>
 </p>
 
-## 📖 Introduction
+> This is the official implementation for the paper [**Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping**](https://openreview.net/forum?id=1I7PCbOPfe) (**TMLR**).
 
-This is the official implementation for the paper [**Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping**](https://openreview.net/forum?id=1I7PCbOPfe) (**TMLR**).
+## 📖 Introduction
 
 This project studies architectural redundancy in Transformer-based LLMs and provides practical pipelines for:
 - Block Drop
