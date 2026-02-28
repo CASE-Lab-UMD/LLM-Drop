@@ -34,7 +34,7 @@ The dropping pipeline is built on [LLaMA-Factory](https://github.com/hiyouga/LLa
 
 ## 📰 News
 - Feb 2026: This paper is published in **Transactions on Machine Learning Research (TMLR)**.
-- May 2025: 🏆 Awarded the Qualcomm Innovation Fellowship (QIF) North America for the proposal “Less Attention, Much Faster: Toward a Future of Efficiency-Optimized Transformer Architectures.”
+- May 2025: 🏆 Awarded the Qualcomm Innovation Fellowship (QIF) North America for the proposal *“Less Attention, Much Faster: Toward a Future of Efficiency-Optimized Transformer Architectures.”*
 - Nov 2024: Added support for more model families (Gemma2, Baichuan, DeepSeek, Yi, Solar).
 - Sep 2024: Released dropped-model checkpoints in this [Hugging Face collection](https://huggingface.co/collections/LLM-Drop/llm-drop-66dde616140f04eb18424a0a).
 - Jun 2024: Released arXiv preprint and code.
