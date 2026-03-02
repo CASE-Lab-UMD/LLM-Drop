@@ -1,4 +1,4 @@
-<h1 align="center">Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping</h1>
+<h1 align="center">[TMLR] Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping</h1>
 
 <p align="center">
   <a href="https://openreview.net/forum?id=1I7PCbOPfe"><img src="https://img.shields.io/badge/Paper-OpenReview-8A2BE2" alt="OpenReview"></a>
