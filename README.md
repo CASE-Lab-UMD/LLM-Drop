@@ -159,12 +159,15 @@ Before running, edit placeholders in those scripts (`model_path`, `quant_path`) 
 ## 📄 Citation
 
 ```bibtex
-@misc{he2024uncoveringredundancytransformers,
-  title={Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping},
-  author={Shwai He and Guoheng Sun and Zheyu Shen and Ang Li},
-  year={2024},
-  howpublished={OpenReview},
-  url={https://openreview.net/forum?id=1I7PCbOPfe}
+@article{
+    he2026uncovering,
+    title={Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping},
+    author={Shwai He and Guoheng Sun and Zheyu Shen and Ang Li},
+    journal={Transactions on Machine Learning Research},
+    issn={2835-8856},
+    year={2026},
+    url={https://openreview.net/forum?id=1I7PCbOPfe},
+    note={}
 }
 ```
 
