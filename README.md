@@ -11,6 +11,7 @@
 </p>
 
 <p align="center">
+  <a href="https://case-lab-umd.github.io/LLM-Drop/">🌐 Project Page</a> •
   <a href="#-news">📰 News</a> •
   <a href="#-installation">⚙️ Installation</a> •
   <a href="#-repository-layout">📦 Layout</a> •

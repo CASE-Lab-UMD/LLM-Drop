@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LLM-Drop: Uncovering Redundancy in Transformers</title>
+  <meta name="description" content="Project page for Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping.">
+  <style>
+    :root {
+      --ink: #202326;
+      --muted: #5b6268;
+      --paper: #f8fbfa;
+      --surface: #ffffff;
+      --line: #dbe3e0;
+      --green: #0d6b5d;
+      --green-dark: #173f39;
+      --red: #c84f49;
+      --yellow: #f0c64a;
+      --shadow: 0 16px 46px rgba(32, 35, 38, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 17px;
+      line-height: 1.65;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: var(--green);
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 4px;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-inner {
+      width: min(1120px, calc(100% - 36px));
+      min-height: 58px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      color: var(--ink);
+      font-weight: 850;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 16px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .hero {
+      padding: 74px 22px 62px;
+      background: linear-gradient(130deg, #0d6b5d 0%, #173f39 52%, #202326 100%);
+      color: #ffffff;
+    }
+
+    .hero-wrap {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 440px);
+      gap: 34px;
+      align-items: center;
+    }
+
+    .venue {
+      display: inline-flex;
+      padding: 6px 11px;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.14);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    h1 {
+      margin: 20px 0 0;
+      font-size: 50px;
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .positioning {
+      max-width: 760px;
+      margin: 24px 0 0;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 20px;
+    }
+
+    .authors,
+    .affiliations {
+      margin: 18px 0 0;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 16px;
+    }
+
+    .authors a {
+      color: #ffffff;
+      font-weight: 750;
+    }
+
+    .hero-actions,
+    .resource-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 9px 15px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: #ffffff;
+      color: var(--ink);
+      font-weight: 850;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.42);
+    }
+
+    .hero-figure {
+      width: min(100%, 440px);
+      justify-self: end;
+      margin: 0;
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-figure img {
+      width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+      padding: 18px;
+      background: #ffffff;
+    }
+
+    .hero-figure figcaption {
+      padding: 13px 16px 15px;
+      background: #ffffff;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    section {
+      padding: 68px 22px;
+    }
+
+    .wrap {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    .narrow {
+      width: min(860px, 100%);
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: 40px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 20px;
+    }
+
+    .claim-grid,
+    .pipeline-grid,
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 32px;
+    }
+
+    .claim,
+    .pipeline-step,
+    .resource {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 0 10px 26px rgba(32, 35, 38, 0.06);
+    }
+
+    .claim,
+    .pipeline-step {
+      padding: 22px;
+    }
+
+    .claim strong,
+    .pipeline-step strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--green);
+      font-size: 18px;
+    }
+
+    .band {
+      background: #ffffff;
+      border-block: 1px solid var(--line);
+    }
+
+    .pipeline-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .pipeline-step {
+      min-height: 190px;
+      border-top: 5px solid var(--green);
+    }
+
+    .news-list {
+      margin: 30px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 14px;
+    }
+
+    .news-list li {
+      padding: 16px 18px;
+      border-left: 5px solid var(--yellow);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 10px 26px rgba(32, 35, 38, 0.06);
+    }
+
+    .resource {
+      min-height: 172px;
+      padding: 22px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .resource span {
+      display: block;
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .resource strong {
+      display: block;
+      margin-top: 8px;
+      color: var(--green);
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .resource p {
+      margin: 12px 0 0;
+      color: var(--muted);
+    }
+
+    .citation {
+      background: #26332f;
+      color: #ffffff;
+    }
+
+    .citation .lead,
+    .citation .eyebrow {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    pre {
+      margin: 28px 0 0;
+      padding: 20px;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: #101815;
+      color: #f7fbf8;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    footer {
+      padding: 28px 22px;
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-wrap,
+      .claim-grid,
+      .pipeline-grid,
+      .resource-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-figure {
+        width: min(100%, 520px);
+        justify-self: start;
+      }
+
+      .nav-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px 0;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      h2 {
+        font-size: 30px;
+      }
+
+      .positioning,
+      .lead {
+        font-size: 18px;
+      }
+
+      section {
+        padding: 54px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Primary">
+    <div class="nav-inner">
+      <a class="brand" href="#">LLM-Drop</a>
+      <div class="nav-links">
+        <a href="#motivation">Motivation</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#resources">Resources</a>
+        <a href="#news">News</a>
+        <a href="#citation">Citation</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-wrap">
+      <div>
+        <div class="venue">TMLR 2026</div>
+        <h1>Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping</h1>
+        <p class="positioning">A unified study of architectural redundancy in Transformer-based LLMs, with practical pipelines for block dropping, attention/MLP layer dropping, joint layer dropping, and post-training quantization.</p>
+        <p class="authors">
+          <a href="https://shwai-he.github.io/">Shwai He*</a>,
+          <a href="https://s1ghhh.github.io/">Guoheng Sun*</a>,
+          <a href="https://shenzheyu.github.io/">Zheyu Shen</a>,
+          <a href="https://www.ang-li.com/">Ang Li</a>
+        </p>
+        <p class="affiliations">University of Maryland, College Park</p>
+        <div class="hero-actions">
+          <a class="button" href="https://openreview.net/forum?id=1I7PCbOPfe">Paper</a>
+          <a class="button secondary" href="https://github.com/CASE-Lab-UMD/LLM-Drop">Code</a>
+          <a class="button secondary" href="https://huggingface.co/collections/LLM-Drop/llm-drop-66dde616140f04eb18424a0a">Models</a>
+          <a class="button secondary" href="#citation">BibTeX</a>
+        </div>
+      </div>
+      <figure class="hero-figure">
+        <img src="static/images/Layer_Drop.svg" alt="LLM-Drop layer dropping overview">
+        <figcaption>LLM-Drop studies Transformer redundancy through block drop, layer drop, joint layer drop, and quantization-aware evaluation.</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <main>
+    <section id="motivation">
+      <div class="wrap">
+        <p class="eyebrow">Motivation</p>
+        <h2>Not every Transformer component is equally necessary.</h2>
+        <p class="lead">LLM-Drop examines architectural redundancy across Transformer blocks and sublayers, then turns that analysis into reproducible dropping and benchmarking pipelines.</p>
+        <div class="claim-grid">
+          <div class="claim">
+            <strong>Unified dropping study</strong>
+            The project compares block dropping, attention-layer dropping, MLP-layer dropping, and joint layer dropping under one framework.
+          </div>
+          <div class="claim">
+            <strong>Practical model editing</strong>
+            Dropped configurations are represented through custom model files and updated configs, making the resulting checkpoints loadable with Transformers.
+          </div>
+          <div class="claim">
+            <strong>Efficiency evaluation</strong>
+            The repo includes task performance, inference speed, and optional AWQ/GPTQ quantization workflows.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pipeline" class="band">
+      <div class="wrap">
+        <p class="eyebrow">Pipeline</p>
+        <h2>From importance estimation to dropped checkpoints.</h2>
+        <p class="lead">The pipeline estimates module importance, selects layers or blocks to remove, writes updated model configs, and benchmarks the resulting model.</p>
+        <div class="pipeline-grid">
+          <div class="pipeline-step">
+            <strong>Block Drop</strong>
+            Remove full Transformer blocks when both attention and MLP sublayers are selected.
+          </div>
+          <div class="pipeline-step">
+            <strong>Layer Drop</strong>
+            Drop attention or MLP sublayers independently to study subcomponent redundancy.
+          </div>
+          <div class="pipeline-step">
+            <strong>Joint Layer Drop</strong>
+            Combine attention and MLP dropping decisions for a broader compression schedule.
+          </div>
+          <div class="pipeline-step">
+            <strong>Quantization</strong>
+            Evaluate dropped models with optional AWQ and GPTQ post-training quantization.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="resources">
+      <div class="wrap">
+        <p class="eyebrow">Resources</p>
+        <h2>Paper, code, checkpoints, and benchmarks.</h2>
+        <p class="lead">The repository includes the dropping pipeline, benchmark scripts, custom dropped-model classes, and released checkpoints.</p>
+        <div class="resource-grid">
+          <a class="resource" href="https://openreview.net/forum?id=1I7PCbOPfe">
+            <span>Paper</span>
+            <strong>OpenReview</strong>
+            <p>Read the TMLR version of the paper.</p>
+          </a>
+          <a class="resource" href="https://github.com/CASE-Lab-UMD/LLM-Drop">
+            <span>Code</span>
+            <strong>GitHub</strong>
+            <p>Run block/layer dropping, speed tests, and LM-Eval benchmarks.</p>
+          </a>
+          <a class="resource" href="https://huggingface.co/collections/LLM-Drop/llm-drop-66dde616140f04eb18424a0a">
+            <span>Models</span>
+            <strong>Hugging Face</strong>
+            <p>Download released dropped-model checkpoints.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="news" class="band">
+      <div class="narrow">
+        <p class="eyebrow">News</p>
+        <h2>Project updates.</h2>
+        <ul class="news-list">
+          <li><strong>Feb 2026:</strong> The paper is published in Transactions on Machine Learning Research.</li>
+          <li><strong>May 2025:</strong> The project received the Qualcomm Innovation Fellowship North America award for efficiency-optimized Transformer architectures.</li>
+          <li><strong>Sep 2024:</strong> Dropped-model checkpoints were released on Hugging Face.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="citation" class="citation">
+      <div class="narrow">
+        <p class="eyebrow">Citation</p>
+        <h2>Cite this work.</h2>
+        <p class="lead">If LLM-Drop helps your research, please cite the corresponding paper.</p>
+        <pre><code>@article{
+  he2026uncovering,
+  title={Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping},
+  author={Shwai He and Guoheng Sun and Zheyu Shen and Ang Li},
+  journal={Transactions on Machine Learning Research},
+  issn={2835-8856},
+  year={2026},
+  url={https://openreview.net/forum?id=1I7PCbOPfe},
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>LLM-Drop</span>
+      <span>Contact: shwaihe@umd.edu, ghsun@umd.edu</span>
+    </div>
+  </footer>
+</body>
+</html>
