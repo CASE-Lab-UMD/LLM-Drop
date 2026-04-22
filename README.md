@@ -20,7 +20,7 @@
   <a href="#-citation">📄 Citation</a>
 </p>
 
-This is the official implementation for the paper [**Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping**](https://openreview.net/forum?id=1I7PCbOPfe) (**TMLR**).
+This is the official implementation for the paper [**Uncovering the Redundancy in Transformers via a Unified Study of Layer Dropping**](https://openreview.net/forum?id=1I7PCbOPfe) (**TMLR**). Early version: [**What Matters in Transformers? Not All Attention Is Needed**](https://arxiv.org/abs/2406.15786)
 
 ## 📖 Introduction
 
