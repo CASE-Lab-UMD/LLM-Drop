@@ -2,6 +2,7 @@
 
 <p align="center">
   <a href="https://openreview.net/forum?id=1I7PCbOPfe"><img src="https://img.shields.io/badge/Paper-OpenReview-8A2BE2" alt="OpenReview"></a>
+  <a href="https://huggingface.co/collections/LLM-Drop/llm-drop-66dde616140f04eb18424a0a"><img src="https://img.shields.io/badge/Models-Hugging%20Face-F9D371" alt="Hugging Face"></a>
   <img src="https://img.shields.io/badge/TMLR-2026-0B7285" alt="TMLR 2026">
   <img src="https://img.shields.io/badge/Python-3.10+-green" alt="Python 3.10+">
 </p>
