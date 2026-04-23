@@ -1,4 +1,6 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 port="21804"
 GPUs="0,1,2,3,4,5,6,7"
@@ -22,9 +24,9 @@ do
     do
         for drop_num in "${drop_nums[@]}"
         do
-            cfg_path=./"$model_name"_drop"$drop_num"_"$drop_module"/config.json # PATH to the corresponding config.json file.
+            cfg_path="${ROOT_DIR}/$model_name"_drop"$drop_num"_"$drop_module"/config.json # PATH to the corresponding config.json file.
             cp -f "$cfg_path" ./"$model_name"_model/config.json # Replace the original config.json file.
-            cp ./"$model_name"_drop"$drop_num"_"$drop_module"/*.py ./"$model_name"_model/ # Build the configuration and modeling files for remote code.
+            cp "${ROOT_DIR}"/"$model_name"_drop"$drop_num"_"$drop_module"/*.py ./"$model_name"_model/ # Build the configuration and modeling files for remote code.
             echo "Eval the config of:"
             echo $cfg_path
 

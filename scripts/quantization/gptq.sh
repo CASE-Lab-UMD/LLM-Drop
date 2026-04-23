@@ -1,4 +1,6 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 model_path="########PATH_TO_HUGGING_FACE_CHECKPOINT#########"
 quant_path="########PATH_TO_SAVE_THE_QUANTIZED_MODEL########"
@@ -8,7 +10,7 @@ seed=0
 num_samples=16
 calibration_template=default
 
-python AutoGPTQ/quantize.py \
+python "${ROOT_DIR}/src/llmtuner/compression/quantization/AutoGPTQ/quantize.py" \
   --pretrained_model_dir $model_path \
   --quantized_model_dir $quant_path \
   --bits $bits \

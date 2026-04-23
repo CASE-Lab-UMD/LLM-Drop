@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import torch
-from peft import LoraConfig, LoraModel, PeftModel, TaskType, get_peft_model, prepare_model_for_kbit_training
+from peft import LoraConfig, LoraModel, PeftModel, TaskType, get_peft_model
 from transformers.integrations import is_deepspeed_zero3_enabled
 
 from ..extras.logging import get_logger

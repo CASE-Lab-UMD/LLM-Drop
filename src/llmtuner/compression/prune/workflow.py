@@ -1,6 +1,5 @@
 
 import os
-from copy import deepcopy
 from typing import TYPE_CHECKING, List, Optional
 
 from accelerate import Accelerator
@@ -11,8 +10,8 @@ from llmtuner.data import get_dataset
 from llmtuner.extras.constants import IGNORE_INDEX
 from llmtuner.model import load_model_and_tokenizer
 
-from transformers import DataCollatorForSeq2Seq, DataCollatorForLanguageModeling, DataCollatorWithPadding
-from .io import load_json, save_sparse_model, save_block_dropped_config, save_layer_dropped_config
+from transformers import DataCollatorForSeq2Seq, DataCollatorForLanguageModeling
+from .io import load_json, save_block_dropped_config, save_layer_dropped_config
 from .block_drop import consecutive_block_dropping, discrete_block_dropping, post_block_drop
 from .layer_drop import discrete_layer_dropping, post_layers_drop
 
@@ -48,14 +47,19 @@ def run_prune(
 
     # 🔍 model & tokenizer
     model, tokenizer = load_model_and_tokenizer(model_args, finetuning_args, training_args.do_train)
-    
+
+    use_deepspeed = os.environ.get("ACCELERATE_USE_DEEPSPEED", "false").lower() == "true"
+    use_fsdp = os.environ.get("ACCELERATE_USE_FSDP", "false").lower() == "true"
+
     if pruning_args.prune_method == "layer_drop" and pruning_args.layer_drop_method == "post_dropping":
-        assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
+        if use_deepspeed or use_fsdp:
+            raise RuntimeError("Please run post_dropping without DeepSpeed/FSDP.")
         reserved_layer_list = load_json(os.path.join(pruning_args.prune_model_save_path, "reserved_layers.json"))
         post_layers_drop(pruning_args.prune_model_save_path, pruning_args.target_layer, model, tokenizer, reserved_layer_list, accelerator, pruning_args.only_update_config)
         exit()
     if pruning_args.prune_method == "block_drop" and pruning_args.block_drop_method == "post_dropping":
-        assert (os.environ.get("ACCELERATE_USE_DEEPSPEED", "false")) and (os.environ.get("ACCELERATE_USE_FSDP", "false"))
+        if use_deepspeed or use_fsdp:
+            raise RuntimeError("Please run post_dropping without DeepSpeed/FSDP.")
         reserved_layer_list = load_json(os.path.join(pruning_args.prune_model_save_path, "reserved_layers.json"))
         post_block_drop(pruning_args.prune_model_save_path, model, tokenizer, reserved_layer_list, accelerator, pruning_args.only_update_config)
         exit()
@@ -107,8 +111,6 @@ def run_prune(
         elif pruning_args.prune_method == "block_drop":
             save_block_dropped_config(pruning_args.prune_model_save_path, model, tokenizer, accelerator, dropped_layer_list=dropped_layer_list)
         else:
-            # 🔍 Save sparse model to disk
-            save_sparse_model(pruning_args.prune_model_save_path, model, tokenizer, accelerator, update_state_dict, check_sparsity=True)
+            raise NotImplementedError(f"Unsupported prune method: {pruning_args.prune_method}")
 
     accelerator.print("All done!")
-

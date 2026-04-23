@@ -46,6 +46,7 @@ def warmup(model):
 def generate_torch(model, input_ids, n_generate):
     context_time = 0
     generate_time = []
+    token = None
 
     with torch.inference_mode():
         for i in range(n_generate):
@@ -57,6 +58,8 @@ def generate_torch(model, input_ids, n_generate):
                 inputs = torch.as_tensor(input_ids, device=next(model.parameters()).device)
             else:
                 # decode tokens
+                if token is None:
+                    raise RuntimeError("Decode token is not initialized.")
                 inputs = torch.as_tensor(token, device=next(model.parameters()).device)
 
             out = model(inputs, use_cache=True)
@@ -96,7 +99,7 @@ def generate_hf(model: BaseAWQForCausalLM, input_ids, n_generate):
 
 
 def load_model(model_path, model_type, quant_file, n_generate, batch_size, no_safetensors, pretrained, model=None):
-    print(f" -- Loading model...")
+    print(" -- Loading model...")
 
     if model_type == "normal":
         if model is not None:  # use the last loaded model to save time
@@ -157,7 +160,7 @@ def run_round(generator, model, n_generate, input_ids, batch_size, pretrained):
 
     print(f"Memory (VRAM): {total_memory_used:.2f} GB ({memory_pct:.2f}%)")
 
-    print(f" -- Warming up...")
+    print(" -- Warming up...")
     warmup(model)
 
     print(f" -- Generating {n_generate} tokens, {input_ids.shape[1]} in context...")

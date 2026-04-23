@@ -251,8 +251,8 @@ def post_block_drop(prune_model_save_path, model, tokenizer, reserved_layer_list
             raise ValueError("Unsupported model type!")
 
         dropped_attn_list = dropped_mlp_list = list(set(list(range(out_cfg.num_hidden_layers))) - set(reserved_layer_list))
-        out_cfg.drop_mlp_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, f'drop_mlp_list', [])) if v] + dropped_mlp_list
-        out_cfg.drop_attn_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, f'drop_attn_list', [])) if v] + dropped_attn_list
+        out_cfg.drop_mlp_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, "drop_mlp_list", [])) if v] + dropped_mlp_list
+        out_cfg.drop_attn_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, "drop_attn_list", [])) if v] + dropped_attn_list
 
         accelerator.print(f"Dropped attention list: {dropped_attn_list}")
         accelerator.print(f"Dropped MLP list: {dropped_mlp_list}")

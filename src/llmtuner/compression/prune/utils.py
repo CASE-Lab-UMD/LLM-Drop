@@ -109,7 +109,7 @@ def check_sparsity_from_state_dict(state_dict):
 def prepare_calibration_input(model, dataloader, num_samples=16):
     layers = model.model.layers
 
-    cache = {'inputs': [], 'attention_mask': [], "position_ids": [], "position_ids": [], "cache_position": []}
+    cache = {"inputs": [], "attention_mask": [], "position_ids": [], "cache_position": []}
 
     class Catcher(nn.Module):
         def __init__(self, module):

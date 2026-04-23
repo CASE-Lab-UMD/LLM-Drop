@@ -8,13 +8,17 @@ from .patcher import patch_config, patch_model, patch_tokenizer, patch_valuehead
 from .utils import load_valuehead_params, register_autoclass
 from ..extras.logging import get_logger
 from ..extras.misc import count_parameters, get_current_device, try_download_model_from_ms
+try:
+    from auto_gptq import AutoGPTQForCausalLM
+except ImportError:
+    AutoGPTQForCausalLM = None
 
 if TYPE_CHECKING:
     from transformers import PreTrainedModel, PreTrainedTokenizer
     from ..hparams import FinetuningArguments, ModelArguments
 
 # 🔍🔍🔍
-from transformers import AutoConfig, AutoModel, AutoModelForCausalLM
+from transformers import AutoConfig, AutoModelForCausalLM
 
 
 logger = get_logger(__name__)
@@ -95,6 +99,8 @@ def load_model_and_tokenizer(
                 **config_kwargs,
             )
         else:
+            if AutoGPTQForCausalLM is None:
+                raise ImportError("auto-gptq is required when `model_args.autogptq` is enabled.")
             model = AutoGPTQForCausalLM.from_quantized(
                 model_args.model_name_or_path,
                 trust_remote_code=False,

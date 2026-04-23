@@ -189,8 +189,8 @@ def post_layers_drop(prune_model_save_path, target_layer, model, tokenizer, rese
         else:
             raise ValueError("Unsupported target_layer!")
 
-        out_cfg.drop_mlp_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, f'drop_mlp_list', [])) if v] + dropped_mlp_list
-        out_cfg.drop_attn_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, f'drop_attn_list', [])) if v] + dropped_attn_list
+        out_cfg.drop_mlp_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, "drop_mlp_list", [])) if v] + dropped_mlp_list
+        out_cfg.drop_attn_list = [idx for idx, v in enumerate(getattr(unwrapped_model.config, "drop_attn_list", [])) if v] + dropped_attn_list
 
         accelerator.print(f"Dropped attention list: {dropped_attn_list}")
         accelerator.print(f"Dropped MLP list: {dropped_mlp_list}")
