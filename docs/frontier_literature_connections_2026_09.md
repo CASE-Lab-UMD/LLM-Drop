@@ -15,14 +15,14 @@
 | :---: | :--- | :--- | :--- | :---: |
 | `2026-09-26` | [**🤖 VLA-Pruner**](https://arxiv.org/abs/2511.16449) (`arXiv:2511.16449`) | 在 OpenVLA 与主流机器人操控基准（LIBERO-Spatial / Object / Goal / Long）上，剔除 **50%–75% 视觉 Token** 仍保持与全量 Token 持平的任务成功率，端到端控制频率显... | `src/compress.py` (Hybrid Layer-Drop + Mid-Block Looping) | [2026-09-26](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-26_ai_paper_notes.md) |
 | `2026-09-25` | [**Fully Looped Transformer**](https://arxiv.org/abs/2605.18797) (`arXiv:2605.18797`) | 在完全不增加任何额外参数（0 Extra Parameters）的条件下，Fully Looped Transformer 在 $K=8, 12$ 步循环预训练中完全消除了传统 Looped Transformer 的梯度尖峰（G... | `src/compress.py` (Hybrid Layer-Drop + Mid-Block Looping) | [2026-09-25](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-25_ai_paper_notes.md) |
-| `2026-09-25` | [**On the Limits of Layer Pruning in Genera**](https://arxiv.org/abs/2602.01997) (`arXiv:2602.01997`) | 实验精确测定了 Llama-3-8B/70B 与 Qwen-2.5 在不同推理跳数 $m \in \{2, 3, 4, 5\}$ 下的临界剩余层数 $L_{\text{crit}}(m)$，并证明当物理层被剪除后... | `src/compress.py` (Multi-Hop Reasoning Depth Lower Bound & Looped Compensation) | [2026-09-25](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-25_ai_paper_notes.md) |
+| `2026-09-25` | [**On the Limits of Layer Pruning in Genera**](https://arxiv.org/abs/2602.01997) (`arXiv:2602.01997`) | 实验精确测定了 Llama-3-8B/70B 与 Qwen-2.5 在不同推理跳数 $m \in \lbrace2, 3, 4, 5\rbrace$ 下的临界剩余层数 $L _ {\text{crit}}(m)$ ，并证明当物理层... | `src/compress.py` (Multi-Hop Reasoning Depth Lower Bound & Looped Compensation) | [2026-09-25](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-25_ai_paper_notes.md) |
 | `2026-09-25` | [**How Pruning Attention Layers Affects Int**](https://arxiv.org/abs/2606.24970) (`arXiv:2606.24970`) | 在事实问答（TruthfulQA、haluEval）与医疗/金融高风险推理任务上，该校准修复将深度剪枝模型的 **ECE 降低 68%**，并在基于置信度的拒绝采样（Selective Prediction）中恢复了 98% 的安... | `src/compress.py` (Post-Attention-Drop Temperature & Confidence Calibration) | [2026-09-25](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-25_ai_paper_notes.md) |
 | `2026-09-24` | [**Training-Free Looped Transformers**](https://arxiv.org/abs/2605.23872) (`arXiv:2605.23872`) | 在完全零训练（Zero Finetuning）的 **Llama-3-8B** 与 **Mistral-7B** 上，对中段 6 层额外循环 $K=2$ 次，在 GSM8K、ARC-Challenge 与逻辑推理任务上直接获得... | `src/compress.py` (Hybrid Layer-Drop + Mid-Block Looping) | [2026-09-24](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-24_ai_paper_notes.md) |
-| `2026-09-24` | [**Decision Representation Transitions in Pruning**](https://arxiv.org/abs/2605.07271) (`arXiv:2605.07271`) | 在多跳问答与算术推理任务中，避开相变区间 $[l^*, l^*+\Delta]$ 的相变感知剪枝在 **30% 剪枝率**下比传统余弦相似度剪枝提升 **`+18.5%`**。 | `src/compress.py` (Phase-Transition Boundary Protection in Middle-Deep Layers) | [2026-09-24](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-24_ai_paper_notes.md) |
+| `2026-09-24` | [**Decision Representation Transitions in Pruning**](https://arxiv.org/abs/2605.07271) (`arXiv:2605.07271`) | 在多跳问答与算术推理任务中，避开相变区间 $[l^\star, l^\star+\Delta]$ 的相变感知剪枝在 **30% 剪枝率**下比传统余弦相似度剪枝提升 **`+18.5%`**。 | `src/compress.py` (Phase-Transition Boundary Protection in Middle-Deep Layers) | [2026-09-24](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-24_ai_paper_notes.md) |
 | `2026-09-23` | [**HetDPT**](https://arxiv.org/abs/2607.03784) (`arXiv:2607.03784`) | 在 **DeiT**、**Swin** 与 **CLIP-ViT-L/14** 上，HetDPT 在相同 **1.5x–1.8x 硬件实测加速比** 下，比整块深度剪枝提升了 **`+1.9%` 至 `+3.2%`** 的 Ima... | `src/compress.py` (Heterogeneous MHSA vs FFN Sub-layer Pruning Ratio) | [2026-09-23](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-23_ai_paper_notes.md) |
 | `2026-09-23` | [**D-Cut**](https://arxiv.org/abs/2607.14647) (`arXiv:2607.14647`) | 在 Batch Size = 16–64 的生产级投机解码服务中，D-Cut 将验证阶段算力开销削减 **38%**，端到端吞吐在 EAGLE-2 基线上进一步提升 **1.42x**。 | `src/benchmark_speed.py` (Dynamic Verification Depth Early-Cutting) | [2026-09-23](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-23_ai_paper_notes.md) |
 | `2026-09-22` | [**LoRP**](https://arxiv.org/abs/2605.27786) (`arXiv:2605.27786`) | 在 **Llama-2/3** 与 **Mistral-7B** 的 25% 免训练层剪枝上，LoRP 在 MMLU 与 BBH 复杂推理基准上比全局余弦打分（ShortGPT）提升 **`+4.3%`**。 | `src/compress.py` (Manifold Locality-Preserving One-Shot Layer Drop) | [2026-09-22](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-22_ai_paper_notes.md) |
-| `2026-09-21` | [**DeepLoop**](https://arxiv.org/abs/2607.13491) (`arXiv:2607.13491`) | 在循环深度从 $K=2$ 扩展至 **$K=16$** 的语言与数学推理预训练中，标准 Pre-LN 循环架构在 $K \ge 6$ 时完全发散，而 **DeepLoop** 稳定收敛并实现随循环次数 $K$ 对数线性下降的测试集... | `src/compress.py` (Hybrid Layer-Drop + Mid-Block Looping) | [2026-09-21](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-21_ai_paper_notes.md) |
+| `2026-09-21` | [**DeepLoop**](https://arxiv.org/abs/2607.13491) (`arXiv:2607.13491`) | 在循环深度从 $K=2$ 扩展至 ** $K=16$ ** 的语言与数学推理预训练中，标准 Pre-LN 循环架构在 $K \ge 6$ 时完全发散，而 **DeepLoop** 稳定收敛并实现随循环次数 $K$ 对数线性下降的测... | `src/compress.py` (Hybrid Layer-Drop + Mid-Block Looping) | [2026-09-21](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-21_ai_paper_notes.md) |
 | `2026-09-21` | [**Token Sparse Attention**](https://arxiv.org/abs/2602.03216) (`arXiv:2602.03216`) | 在 64K–128K 多跳检索与大海捞针基准（RULER Multi-Hop Tracing）上，不可逆 Token 剪枝在 70% 稀疏度下准确率跌至 `31.2%`，而 **Token Sparse Attention** 保... | `src/compress.py` & `src/benchmark_speed.py` (`CASE-Lab-UMD/LLM-Drop`) | [2026-09-21](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-21_ai_paper_notes.md) |
 | `2026-09-20` | [**SHIFT-LLM**](https://arxiv.org/abs/2608.25068) (`arXiv:2608.25068`) | 在 **Llama-3-8B/70B** 与 **Qwen-2.5-14B** 上剪除 **25%–35% 的层**后，无需任何梯度下降微调（仅需 30 秒闭式矩阵求逆），SHIFT-LLM 将 WikiText2 困惑度（PPL... | `src/compress.py` (Closed-Form Linear Residual Adapter at Dropped Layer Seam) | [2026-09-20](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-20_ai_paper_notes.md) |
 | `2026-09-19` | [**WRP**](https://arxiv.org/abs/2609.09883) (`arXiv:2609.09883`) | **秒级零样本层裁剪且跨领域泛化更强**：在 **Llama-3-8B/70B**、**Qwen-2.5-14B** 与 **Mistral-7B** 上，WRP 在完全不运行任何前向传播（耗时不足 8 秒）的情况下剪除... | `src/compress.py` (Zero-Forward Weight Spectral Redundancy Layer Scoring) | [2026-09-19](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-19_ai_paper_notes.md) |
@@ -51,11 +51,15 @@
 
 #### 💡 核心方法与数学实现 (Mathematical Formulations)
 1. **双层重要度融合准则 (Combine-then-Filter Dual-Level Criterion)**：
-   - 同时提取语言指令在 Prefill 阶段对第 $i$ 个视觉 Token 的语义关注度 $I_{\text{sem}}^{(i)}$，以及解码器生成动作 Token 时的交叉注意力得分 $I_{\text{act}, t}^{(i)}$；
+   - 同时提取语言指令在 Prefill 阶段对第 $i$ 个视觉 Token 的语义关注度 $I _ {\text{sem}}^{(i)}$ ，以及解码器生成动作 Token 时的交叉注意力得分 $I _ {\text{act}, t}^{(i)}$ ；
 2. **跨时间步动作相关性平滑 (Temporal Action Smoothing)**：
    - 利用连续控制帧之间的时间连续性，引入历史动作注意力动量缓存：
-     $$\tilde{I}_{\text{act}, t}^{(i)} = \lambda \tilde{I}_{\text{act}, t-1}^{(i)} + (1 - \lambda) I_{\text{act}, t}^{(i)}$$
-   - 仅保留综合得分 $S_t^{(i)} = I_{\text{sem}}^{(i)} \cdot \tilde{I}_{\text{act}, t}^{(i)}$ 最高的视觉 Token 子集。
+
+$$
+\tilde{I} _ {\text{act}, t}^{(i)} = \lambda \tilde{I} _ {\text{act}, t-1}^{(i)} + (1 - \lambda) I _ {\text{act}, t}^{(i)}
+$$
+
+   - 仅保留综合得分 $S _ t^{(i)} = I _ {\text{sem}}^{(i)} \cdot \tilde{I} _ {\text{act}, t}^{(i)}$ 最高的视觉 Token 子集。
 
 #### 📊 关键实验与结论 (Experiments & Findings)
 * 在 OpenVLA 与主流机器人操控基准（LIBERO-Spatial / Object / Goal / Long）上，剔除 **50%–75% 视觉 Token** 仍保持与全量 Token 持平的任务成功率，端到端控制频率显著提升。
@@ -67,7 +71,7 @@
   * [Paper #9: *Uncovering the Redundancy in Transformers via Layer Dropping* (TMLR 2025)]
 * **🔬 机理对比与技术演进**：
   * 我们在 W38 周记（9/15–9/17）中深刻总结了两条核心定律：（1）**Layer 0（纯 ID Embedding、尚未经过上下文交互）绝不能直接做激进 Token Drop**，必须在表征充分上下文化之后再按浅层保守、深层激进的曲线压缩；（2）**VLA 的鲁棒性来源于三个时间尺度的“伤口愈合（Wound Healing）”纠错通道**（步内注意力、步间去噪、episode 内周期性视觉重锚）；
-  * `VLA-Pruner` 的时域平滑动量 $\tilde{I}_{\text{act}, t}$ 恰恰显式利用了我们指出的第三层“episode 内时域连续重锚”特性！
+  * `VLA-Pruner` 的时域平滑动量 $\tilde{I} _ {\text{act}, t}$ 恰恰显式利用了我们指出的第三层“episode 内时域连续重锚”特性！
 * **💡 下一阶段研究（Next Research Directions）落地启发**：
   * 在 `Physical AI` (MLSys) 论文中，可将 `VLA-Pruner` 纳入 Related Work 与对比讨论，突出我们 **全栈四维协同压缩（数据 DTR + Token `HiSTrim` + 层 `VLADrop/Loop` + 步数 `SnapFlow` 单步蒸馏）** 相比单一视觉 Token 剪枝在真实硬件延迟（Batch=1 访存带宽瓶颈）上的系统级代差优势。
 
@@ -116,14 +120,22 @@
 ```
 
 #### 🎯 背景与痛点 (Background & Pain Points)
-* **深层循环中的“初始锚点遗忘”与反向传播雅可比谱半径失控**：当一个循环 Transformer 连续迭代 $K \ge 8$ 步时，第 $k$ 步的隐状态 $H^{(k)}$ 经过反复的非线性自注意力和 FFN 变换后，逐渐丢失了原始输入 Token 的精细词法锚点信息；同时在反向传播（BPTT）中，共享权重连乘 $\prod_{k=1}^K \big(I + \frac{\partial f_\theta}{\partial H^{(k)}}\big)$ 极易引发梯度震荡或消失。
+* **深层循环中的“初始锚点遗忘”与反向传播雅可比谱半径失控**：当一个循环 Transformer 连续迭代 $K \ge 8$ 步时，第 $k$ 步的隐状态 $H^{(k)}$ 经过反复的非线性自注意力和 FFN 变换后，逐渐丢失了原始输入 Token 的精细词法锚点信息；同时在反向传播（BPTT）中，共享权重连乘 $\prod _ {k=1}^K \big(I + \frac{\partial f _ \theta}{\partial H^{(k)}}\big)$ 极易引发梯度震荡或消失。
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
 1. **零参数初始注意力注入（Parameter-Free Attention Injection）**：
-   缓存首轮（$k=0$）计算得到的初始键值张量 $(K^{(0)}, V^{(0)})$。在后续任意第 $k \in \{1, \dots, K\}$ 次循环中，通过凸组合或拼接将初始锚点注入当前步的注意力键值中：
-   $$O^{(k)} = \text{Softmax}\left( \frac{Q^{(k)} \big( (1-\lambda) K^{(k)} + \lambda K^{(0)} \big)^\top}{\sqrt{d_k}} \right) \Big( (1-\lambda) V^{(k)} + \lambda V^{(0)} \Big)$$
-   这一设计在计算图上为每一个循环步 $k$ 建立了一条直通初始表征 $(K^{(0)}, V^{(0)})$ 的**一阶梯度短路高速通道（Direct Gradient Highway）**：
-   $$\frac{\partial \mathcal{L}}{\partial H^{(0)}} = \frac{\partial \mathcal{L}}{\partial H^{(K)}} \prod_{k=1}^K J_k + \lambda \sum_{k=1}^K \frac{\partial \mathcal{L}}{\partial O^{(k)}} \frac{\partial O^{(k)}}{\partial (K^{(0)}, V^{(0)})} \frac{\partial (K^{(0)}, V^{(0)})}{\partial H^{(0)}}$$
+   缓存首轮（ $k=0$ ）计算得到的初始键值张量 $\left(K^{(0)}, V^{(0)}\right)$ 。在后续任意第 $k \in \lbrace1, \dots, K\rbrace$ 次循环中，通过凸组合或拼接将初始锚点注入当前步的注意力键值中：
+
+$$
+O^{(k)} = \text{Softmax}\left( \frac{Q^{(k)} \big( (1-\lambda) K^{(k)} + \lambda K^{(0)} \big)^\top}{\sqrt{d _ k}} \right) \Big( (1-\lambda) V^{(k)} + \lambda V^{(0)} \Big)
+$$
+
+   这一设计在计算图上为每一个循环步 $k$ 建立了一条直通初始表征 $\left(K^{(0)}, V^{(0)}\right)$ 的**一阶梯度短路高速通道（Direct Gradient Highway）**：
+
+$$
+\frac{\partial \mathcal{L}}{\partial H^{(0)}} = \frac{\partial \mathcal{L}}{\partial H^{(K)}} \prod _ {k=1}^K J _ k + \lambda \sum _ {k=1}^K \frac{\partial \mathcal{L}}{\partial O^{(k)}} \frac{\partial O^{(k)}}{\partial (K^{(0)}, V^{(0)})} \frac{\partial (K^{(0)}, V^{(0)})}{\partial H^{(0)}}
+$$
+
    从而彻底消除了高循环步数下的梯度消失与震荡！
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
@@ -131,7 +143,7 @@
 
 #### 🔗 与我们工作（Our Works）的直接关联与落地启发
 * **直接印证我们 `vla-loop` 定律（Lightweight Dropped-Span VLM Cross-KV Grounding）！**
-  * 我们在 `vla-loop` 中发现，当动作专家循环迭代 $K=3,4$ 步时，若每一步都强绑回初始锚点 VLM Prefix KV（即此处的 $(K^{(0)}, V^{(0)})$），即可完美阻止循环轨迹漂移！该论文的梯度短路公式为我们 `vla-loop` 的 Cross-KV Grounding 提供了极其漂亮的反向传播雅可比谱稳定性证明。
+  * 我们在 `vla-loop` 中发现，当动作专家循环迭代 $K=3,4$ 步时，若每一步都强绑回初始锚点 VLM Prefix KV（即此处的 $\left(K^{(0)}, V^{(0)}\right)$ ），即可完美阻止循环轨迹漂移！该论文的梯度短路公式为我们 `vla-loop` 的 Cross-KV Grounding 提供了极其漂亮的反向传播雅可比谱稳定性证明。
 
 ---
 
@@ -171,17 +183,20 @@
 * **层剪枝评估中的“多项选择幸存者偏差”**：大量层剪枝论文声称剪掉 30% 的层后在 HellaSwag、PIQA、Winogrande 甚至 MMLU 选择题上保留了 95% 性能。然而作者通过系统性压力测试发现，同一批被剪枝模型在自由生成的多步算术、代码执行追踪与符号逻辑推理任务上性能暴跌超过 **40%–65%**。
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
-1. **基于计算复杂性理论的串行电路深度下界（TC$^0$ Sequential Depth Lower Bound）**：
-   单个自注意力+FFN 层属于常数深度阈值电路类 $\text{TC}^0$。对于包含 $m$ 步嵌套函数复合 $g_m \circ g_{m-1} \circ \dots \circ g_1(x)$（如多位数连加进位链或 $m$ 跳变量代换）的单个前向步推理，若没有外部 CoT Token 展开，模型内部必须至少具备 $L_{\text{eff}} \ge m \cdot c_{\text{hop}}$ 个串行非线性消息传递层。
-   一旦物理层剪枝使剩余层数 $L_{\text{keep}} = (1 - p) L < m \cdot c_{\text{hop}}$，任何静态线性适配器或宽度扩容都无法弥补串行电路深度的缺失：
-   $$\inf_{\theta \in \Theta_{L_{\text{keep}}}} \mathbb{P}\big( f_\theta(x) \neq g_m \circ \dots \circ g_1(x) \big) \ge \frac{1}{2} - \exp\big(-\Omega(N^{\epsilon})\big) \quad \text{whenever } L_{\text{keep}} < m \cdot c_{\text{hop}}$$
+1. **基于计算复杂性理论的串行电路深度下界（TC $^0$ Sequential Depth Lower Bound）**：
+   单个自注意力+FFN 层属于常数深度阈值电路类 $\text{TC}^0$ 。对于包含 $m$ 步嵌套函数复合 $g _ m \circ g _ {m-1} \circ \dots \circ g _ 1(x)$ （如多位数连加进位链或 $m$ 跳变量代换）的单个前向步推理，若没有外部 CoT Token 展开，模型内部必须至少具备 $L _ {\text{eff}} \ge m \cdot c _ {\text{hop}}$ 个串行非线性消息传递层。
+   一旦物理层剪枝使剩余层数 $L _ {\text{keep}} = (1 - p) L < m \cdot c _ {\text{hop}}$ ，任何静态线性适配器或宽度扩容都无法弥补串行电路深度的缺失：
+
+$$
+\inf _ {\theta \in \Theta _ {L _ {\text{keep}}}} \mathbb{P}\big( f _ \theta(x) \neq g _ m \circ \dots \circ g _ 1(x) \big) \ge \frac{1}{2} - \exp\big(-\Omega(N^{\epsilon})\big) \quad \text{whenever } L _ {\text{keep}} < m \cdot c _ {\text{hop}}
+$$
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
-* 实验精确测定了 Llama-3-8B/70B 与 Qwen-2.5 在不同推理跳数 $m \in \{2, 3, 4, 5\}$ 下的临界剩余层数 $L_{\text{crit}}(m)$，并证明当物理层被剪除后，**唯有通过测试期层循环（Layer Looping）恢复有效串行深度 $L_{\text{eff}}$**，才能跨过生成式推理的电路深度下界！
+* 实验精确测定了 Llama-3-8B/70B 与 Qwen-2.5 在不同推理跳数 $m \in \lbrace2, 3, 4, 5\rbrace$ 下的临界剩余层数 $L _ {\text{crit}}(m)$ ，并证明当物理层被剪除后，**唯有通过测试期层循环（Layer Looping）恢复有效串行深度 $L _ {\text{eff}}$ **，才能跨过生成式推理的电路深度下界！
 
 #### 🔗 与我们工作（Our Works）的直接关联与落地启发
 * **为我们为何从单纯的静态层剪枝（`vla-dtr` / *Layer Dropping* TMLR 2025）走向“层剪枝 + 循环精化协同（`vla-loop`）”提供了最坚实的复杂度理论支撑！**
-  * 在撰写我们的论文导论（Introduction）与理论动机（Motivation）时，该定理可直接引用：静态深度剪枝省下了显存但突破了串行复合电路深度下界 $L_{\text{crit}}$，而通过 1-Pass 主干 + LoRA 循环级联恰好以零额外主干显存恢复了所需的有效复合深度 $L_{\text{eff}}$！
+  * 在撰写我们的论文导论（Introduction）与理论动机（Motivation）时，该定理可直接引用：静态深度剪枝省下了显存但突破了串行复合电路深度下界 $L _ {\text{crit}}$ ，而通过 1-Pass 主干 + LoRA 循环级联恰好以零额外主干显存恢复了所需的有效复合深度 $L _ {\text{eff}}$ ！
 
 ---
 
@@ -225,17 +240,21 @@
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
 1. **抑制头缺失导致的 Logit 方差膨胀模型**：
-   在完整模型中，深层抑制注意力层的输出增量满足 $\langle \Delta h_{\text{inhib}}^{(l)}, h^{(l-1)} \rangle < 0$（即对残差流起负反馈阻尼作用）。剪除该层后，终端隐状态平行范数失控放大，导致输出词表概率 $p_{\text{pruned}}(y \mid x)$ 的期望校准误差（ECE）激增：
-   $$\text{ECE} = \sum_{b=1}^B \frac{|I_b|}{N} \Big| \text{acc}(I_b) - \text{conf}(I_b) \Big|$$
+   在完整模型中，深层抑制注意力层的输出增量满足 $\langle \Delta h _ {\text{inhib}}^{(l)}, h^{(l-1)} \rangle < 0$ （即对残差流起负反馈阻尼作用）。剪除该层后，终端隐状态平行范数失控放大，导致输出词表概率 $p _ {\text{pruned}}(y \mid x)$ 的期望校准误差（ECE）激增：
+
+$$
+\text{ECE} = \sum _ {b=1}^B \frac{|I _ b|}{N} \Big| \text{acc}(I _ b) - \text{conf}(I _ b) \Big|
+$$
+
 2. **负反馈阻尼恢复与流形方差对齐**：
-   在剪枝切口处引入沿残差主方向的阻尼收缩算子 $\tilde{h} = h - \beta \frac{\langle h, u_{\text{inhib}} \rangle}{\|u_{\text{inhib}}\|_2^2} u_{\text{inhib}}$ 并校准输出层温度 $\tau^* = \frac{\sigma(\text{logits}_{\text{pruned}})}{\sigma(\text{logits}_{\text{orig}})}$。
+   在剪枝切口处引入沿残差主方向的阻尼收缩算子 $\tilde{h} = h - \beta \frac{\langle h, u _ {\text{inhib}} \rangle}{\Vert u _ {\text{inhib}}\Vert _ 2^2} u _ {\text{inhib}}$ 并校准输出层温度 $\tau^\star = \frac{\sigma(\text{logits} _ {\text{pruned}})}{\sigma(\text{logits} _ {\text{orig}})}$ 。
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
 * 在事实问答（TruthfulQA、haluEval）与医疗/金融高风险推理任务上，该校准修复将深度剪枝模型的 **ECE 降低 68%**，并在基于置信度的拒绝采样（Selective Prediction）中恢复了 98% 的安全边界。
 
 #### 🔗 与我们工作（Our Works）的直接关联与落地启发
 * **与我们 *Transformer-Geometry* (`arXiv:2609.15975`, EMNLP 2026) 的“负平行分量（Negative Parallel Component）”发现完全吻合！**
-  * 我们在 *Transformer-Geometry* 中明确观测到中深层部分模块具有 $\Delta h_\parallel < 0$ 的径向阻尼效应；剪除它们而不做平行范数阻尼补偿，必然导致终端模长膨胀与置信度失真。
+  * 我们在 *Transformer-Geometry* 中明确观测到中深层部分模块具有 $\Delta h _ \parallel < 0$ 的径向阻尼效应；剪除它们而不做平行范数阻尼补偿，必然导致终端模长膨胀与置信度失真。
 
 ---
 
@@ -280,17 +299,20 @@
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
 1. **中段层块的近似压缩不动点迭代性质（Mid-Stack Contractive Mapping）**：
-   作者分析发现，在预训练 Transformer 的中间深层区间 $[l_a, l_b]$（通常位于 $0.4L \sim 0.75L$），相邻层的输入输出处于同一缓变语义流形上，复合块算子 $\mathcal{F}_{l_a:l_b}$ 在局部切空间上近似构成压缩不动点精化映射。
+   作者分析发现，在预训练 Transformer 的中间深层区间 $[l _ a, l _ b]$ （通常位于 $0.4L \sim 0.75L$ ），相邻层的输入输出处于同一缓变语义流形上，复合块算子 $\mathcal{F} _ {l _ a:l _ b}$ 在局部切空间上近似构成压缩不动点精化映射。
 2. **阻尼流形拉回循环更新（Damped Manifold-Preserving Loop）**：
-   为防止在测试期重复调用 $\mathcal{F}_{l_a:l_b}$ 时隐状态范数越界，在第 $k$ 次额外循环后施加范数匹配与阻尼凸组合：
-   $$h^{(k)} = \frac{\|h^{(0)}\|_2}{\|\tilde{h}^{(k)}\|_2} \tilde{h}^{(k)}, \qquad \text{where } \tilde{h}^{(k)} = (1 - \eta) h^{(k-1)} + \eta \mathcal{F}_{l_a:l_b}(h^{(k-1)})$$
+   为防止在测试期重复调用 $\mathcal{F} _ {l _ a:l _ b}$ 时隐状态范数越界，在第 $k$ 次额外循环后施加范数匹配与阻尼凸组合：
+
+$$
+h^{(k)} = \frac{\Vert h^{(0)}\Vert _ 2}{\Vert\tilde{h}^{(k)}\Vert _ 2} \tilde{h}^{(k)}, \qquad \text{where } \tilde{h}^{(k)} = (1 - \eta) h^{(k-1)} + \eta \mathcal{F} _ {l _ a:l _ b}(h^{(k-1)})
+$$
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
 * 在完全零训练（Zero Finetuning）的 **Llama-3-8B** 与 **Mistral-7B** 上，对中段 6 层额外循环 $K=2$ 次，在 GSM8K、ARC-Challenge 与逻辑推理任务上直接获得 **`+2.1%` 至 `+3.8%`** 的免费准确率提升。
 
 #### 🔗 与我们工作（Our Works）的直接关联与落地启发
 * **与我们 `vla-loop`（Layer-Specific Span-Bounded Dynamic Halting）及 *Transformer-Geometry* (`arXiv:2609.15975`, EMNLP 2026) 高度同源**：
-  * 该文通过范数重缩放 $\frac{\|h^{(0)}\|_2}{\|\tilde{h}^{(k)}\|_2}$ 抑制测试期循环发散，本质上正是我们在 *Transformer-Geometry* 中指出的**抑制平行径向膨胀、仅保留球面切向正交精化**！
+  * 该文通过范数重缩放 $\frac{\Vert h^{(0)}\Vert _ 2}{\Vert\tilde{h}^{(k)}\Vert _ 2}$ 抑制测试期循环发散，本质上正是我们在 *Transformer-Geometry* 中指出的**抑制平行径向膨胀、仅保留球面切向正交精化**！
 
 ---
 
@@ -327,13 +349,17 @@
 * **为何剪除同样数量的层，有时精度仅降 1%，有时却瞬间跌至随机猜测（0%）？** 传统层重要性指标缺乏对决策信息在深度方向如何涌现的相变刻画。
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
-1. **决策表征相变点（Decisive Phase Transition Point $l^*$）的形式化检测**：
+1. **决策表征相变点（Decisive Phase Transition Point $l^\star$ ）的形式化检测**：
    定义第 $l$ 层隐状态对最终输出决策类别 $Y$ 的互信息增益率（通过 Logit Lens 分布与最终层分布的对称 KL 二阶差分度量）：
-   $$\Delta I_{\text{dec}}(l) = D_{\text{KL}}\big( P^{(L)}(Y \mid X) \,\|\, P^{(l-1)}(Y \mid X) \big) - D_{\text{KL}}\big( P^{(L)}(Y \mid X) \,\|\, P^{(l)}(Y \mid X) \big)$$
-   实验揭示 $\Delta I_{\text{dec}}(l)$ 并非随层深均匀分布，而是在窄区间 $[l^*, l^* + \Delta]$ 内呈现尖锐的脉冲式跃迁（将分散在多跳上下文中的隐式证据突然坍缩绑定为显式答案表征）。任何触碰该相变核区间的层剪枝都会切断证据绑定链条。
+
+$$
+\Delta I _ {\text{dec}}(l) = D _ {\text{KL}}\big( P^{(L)}(Y \mid X) \Vert P^{(l-1)}(Y \mid X) \big) - D _ {\text{KL}}\big( P^{(L)}(Y \mid X) \Vert P^{(l)}(Y \mid X) \big)
+$$
+
+   实验揭示 $\Delta I _ {\text{dec}}(l)$ 并非随层深均匀分布，而是在窄区间 $[l^\star, l^\star + \Delta]$ 内呈现尖锐的脉冲式跃迁（将分散在多跳上下文中的隐式证据突然坍缩绑定为显式答案表征）。任何触碰该相变核区间的层剪枝都会切断证据绑定链条。
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
-* 在多跳问答与算术推理任务中，避开相变区间 $[l^*, l^*+\Delta]$ 的相变感知剪枝在 **30% 剪枝率**下比传统余弦相似度剪枝提升 **`+18.5%`**。
+* 在多跳问答与算术推理任务中，避开相变区间 $[l^\star, l^\star+\Delta]$ 的相变感知剪枝在 **30% 剪枝率**下比传统余弦相似度剪枝提升 **`+18.5%`**。
 
 #### 🔗 与我们工作（Our Works）的直接关联与落地启发
 * **与我们 *Demystifying When Pruning Works via Representation Hierarchies* (ICML 2026) 及 `vla-dtr` 的核心相变定律完全一致！**
@@ -379,15 +405,25 @@
 ```
 
 #### 🎯 背景与痛点 (Background & Pain Points)
-* **整块绑定剪枝（Coupled Block Pruning）忽略了注意力与 FFN 的深度角色错位**：传统深度剪枝总是将第 $l$ 层的 $( \text{MHSA}^{(l)}, \text{FFN}^{(l)} )$ 捆绑在一起同时保留或同时删除。然而在视觉与多模态编码器中，深层的空间跨 Token 交互（MHSA）早已收敛（注意力图趋于恒等或全局平均），但深层的逐 Token 特征非线性映射（FFN）仍在执行关键的语义分类投影。
+* **整块绑定剪枝（Coupled Block Pruning）忽略了注意力与 FFN 的深度角色错位**：传统深度剪枝总是将第 $l$ 层的 $\left( \text{MHSA}^{(l)}, \text{FFN}^{(l)} \right)$ 捆绑在一起同时保留或同时删除。然而在视觉与多模态编码器中，深层的空间跨 Token 交互（MHSA）早已收敛（注意力图趋于恒等或全局平均），但深层的逐 Token 特征非线性映射（FFN）仍在执行关键的语义分类投影。
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
 1. **MHSA 与 FFN 异构解耦敏感度建模**：
-   分别为每个子层引入独立的二值门控 $(m_{\text{attn}}^{(l)}, m_{\text{ffn}}^{(l)}) \in \{0, 1\}^2$：
-   $$h_{\text{mid}}^{(l)} = h^{(l-1)} + m_{\text{attn}}^{(l)} \cdot \text{MHSA}^{(l)}\big(\text{LN}_1(h^{(l-1)})\big)$$
-   $$h^{(l)} = h_{\text{mid}}^{(l)} + m_{\text{ffn}}^{(l)} \cdot \text{FFN}^{(l)}\big(\text{LN}_2(h_{\text{mid}}^{(l)})\big)$$
-   利用泰勒二阶敏感度联合硬件实测延迟表 $\tau_{\text{attn}}, \tau_{\text{ffn}}$ 求解整数线性规划（ILP）：
-   $$\min_{\{m_{\text{attn}}^{(l)}, m_{\text{ffn}}^{(l)}\}} \sum_{l=1}^L \Big( (1 - m_{\text{attn}}^{(l)}) \Omega_{\text{attn}}^{(l)} + (1 - m_{\text{ffn}}^{(l)}) \Omega_{\text{ffn}}^{(l)} \Big) \quad \text{s.t.} \quad \sum_{l=1}^L \big( m_{\text{attn}}^{(l)} \tau_{\text{attn}} + m_{\text{ffn}}^{(l)} \tau_{\text{ffn}} \big) \le T_{\text{budget}}$$
+   分别为每个子层引入独立的二值门控 $\left(m _ {\text{attn}}^{(l)}, m _ {\text{ffn}}^{(l)}\right) \in \lbrace0, 1\rbrace^2$ ：
+
+$$
+h _ {\text{mid}}^{(l)} = h^{(l-1)} + m _ {\text{attn}}^{(l)} \cdot \text{MHSA}^{(l)}\big(\text{LN} _ 1(h^{(l-1)})\big)
+$$
+
+$$
+h^{(l)} = h _ {\text{mid}}^{(l)} + m _ {\text{ffn}}^{(l)} \cdot \text{FFN}^{(l)}\big(\text{LN} _ 2(h _ {\text{mid}}^{(l)})\big)
+$$
+
+   利用泰勒二阶敏感度联合硬件实测延迟表 $\tau _ {\text{attn}}, \tau _ {\text{ffn}}$ 求解整数线性规划（ILP）：
+
+$$
+\min _ {\lbrace m _ {\text{attn}}^{(l)}, m _ {\text{ffn}}^{(l)}\rbrace} \sum _ {l=1}^L \Big( (1 - m _ {\text{attn}}^{(l)}) \Omega _ {\text{attn}}^{(l)} + (1 - m _ {\text{ffn}}^{(l)}) \Omega _ {\text{ffn}}^{(l)} \Big) \quad \text{s.t.} \quad \sum _ {l=1}^L \big( m _ {\text{attn}}^{(l)} \tau _ {\text{attn}} + m _ {\text{ffn}}^{(l)} \tau _ {\text{ffn}} \big) \le T _ {\text{budget}}
+$$
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
 * 在 **DeiT**、**Swin** 与 **CLIP-ViT-L/14** 上，HetDPT 在相同 **1.5x–1.8x 硬件实测加速比** 下，比整块深度剪枝提升了 **`+1.9%` 至 `+3.2%`** 的 ImageNet 与多模态下游准确率。
@@ -429,11 +465,11 @@
 ```
 
 #### 🎯 背景与痛点 (Background & Pain Points)
-* **批量投机解码验证阶段的深层算力浪费**：在大 Batch 投机解码中，目标大模型需要同时并行验证每个请求的 $K$ 个草稿 Token。实际上，超过 70% 的简单正确草稿或明显错误的草稿在目标模型的前 $60\%$ 层就已经毫无悬念地分出胜负，继续让它们跑完后 $40\%$ 层纯属浪费。
+* **批量投机解码验证阶段的深层算力浪费**：在大 Batch 投机解码中，目标大模型需要同时并行验证每个请求的 $K$ 个草稿 Token。实际上，超过 70% 的简单正确草稿或明显错误的草稿在目标模型的前 60% 层就已经毫无悬念地分出胜负，继续让它们跑完后 40% 层纯属浪费。
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
 1. **基于中间层 Logit 间隔的动态截断准则**：
-   在中间探测层 $l_{\text{probe}}$，通过轻量早期退出投影计算草稿 Token $y_i$ 的对数概率边际 $\Delta_{i}^{(l)} = \hat{\ell}^{(l)}(y_i) - \max_{v \neq y_i} \hat{\ell}^{(l)}(v)$。当 $|\Delta_{i}^{(l)}| > \gamma_l$ 时，立即锁定接受/拒绝决策，并将该草稿及其后续依赖子树从第 $l+1 \dots L$ 层的批次张量中动态压缩移除。
+   在中间探测层 $l _ {\text{probe}}$ ，通过轻量早期退出投影计算草稿 Token $y _ i$ 的对数概率边际 $\Delta _ {i}^{(l)} = \hat{\ell}^{(l)}(y _ i) - \max _ {v \neq y _ i} \hat{\ell}^{(l)}(v)$ 。当 $|\Delta _ {i}^{(l)}| > \gamma _ l$ 时，立即锁定接受/拒绝决策，并将该草稿及其后续依赖子树从第 $l+1 \dots L$ 层的批次张量中动态压缩移除。
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
 * 在 Batch Size = 16–64 的生产级投机解码服务中，D-Cut 将验证阶段算力开销削减 **38%**，端到端吞吐在 EAGLE-2 基线上进一步提升 **1.42x**。
@@ -481,13 +517,17 @@
 ```
 
 #### 🎯 背景与痛点 (Background & Pain Points)
-* **全局余弦相似度（Global Cosine Similarity）受制于各向异性均值偏移**：ShortGPT 等传统方法通过单点输入输出的余弦相似度 $\cos(h_i^{(l-1)}, h_i^{(l)})$ 判断层冗余度。然而在深层 Transformer 中，所有 Token 都共享一个巨大的共同方向（Common Mean Direction），导致即便某层对 Token 之间的相对局部语义拓扑进行了剧烈重排，其单点全局余弦相似度依然高达 `0.95` 以上，引发误判。
+* **全局余弦相似度（Global Cosine Similarity）受制于各向异性均值偏移**：ShortGPT 等传统方法通过单点输入输出的余弦相似度 $\cos(h _ i^{(l-1)}, h _ i^{(l)})$ 判断层冗余度。然而在深层 Transformer 中，所有 Token 都共享一个巨大的共同方向（Common Mean Direction），导致即便某层对 Token 之间的相对局部语义拓扑进行了剧烈重排，其单点全局余弦相似度依然高达 `0.95` 以上，引发误判。
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
-1. **基于核对齐与 $k$-近邻重叠的局部几何冗余度（Neighborhood Locality Redundancy）**：
-   记第 $l$ 层在小批量样本 $N$ 个 Token 上的局部亲和矩阵为 $K_{i,j}^{(l)} = \exp\left(-\frac{\|h_i^{(l)} - h_j^{(l)}\|_2^2}{2\sigma_l^2}\right)$。定义第 $l$ 层的局部流形冗余度为相邻两层局部邻域分布的对称 KL 散度倒数（或 $k$-NN 交并比）：
-   $$\mathcal{R}_{\text{LoRP}}(l) = \frac{1}{N} \sum_{i=1}^N \left( \frac{|\mathcal{N}_k(h_i^{(l-1)}) \cap \mathcal{N}_k(h_i^{(l)})|}{k} \right) \cdot \exp\Big( - D_{\text{JS}}\big( P_i^{(l-1)} \,\|\, P_i^{(l)} \big) \Big)$$
-   若 $\mathcal{R}_{\text{LoRP}}(l) \to 1$，说明第 $l$ 层既未改变样本间的局部聚类关系，也未分离混淆语义簇，可安全移除。
+1. **基于核对齐与 $k$ -近邻重叠的局部几何冗余度（Neighborhood Locality Redundancy）**：
+   记第 $l$ 层在小批量样本 $N$ 个 Token 上的局部亲和矩阵为 $K _ {i,j}^{(l)} = \exp\left(-\frac{\Vert h _ i^{(l)} - h _ j^{(l)}\Vert _ 2^2}{2\sigma _ l^2}\right)$ 。定义第 $l$ 层的局部流形冗余度为相邻两层局部邻域分布的对称 KL 散度倒数（或 $k$ -NN 交并比）：
+
+$$
+\mathcal{R} _ {\text{LoRP}}(l) = \frac{1}{N} \sum _ {i=1}^N \left( \frac{|\mathcal{N} _ k(h _ i^{(l-1)}) \cap \mathcal{N} _ k(h _ i^{(l)})|}{k} \right) \cdot \exp\Big( - D _ {\text{JS}}\big( P _ i^{(l-1)} \Vert P _ i^{(l)} \big) \Big)
+$$
+
+   若 $\mathcal{R} _ {\text{LoRP}}(l) \to 1$ ，说明第 $l$ 层既未改变样本间的局部聚类关系，也未分离混淆语义簇，可安全移除。
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
 * 在 **Llama-2/3** 与 **Mistral-7B** 的 25% 免训练层剪枝上，LoRP 在 MMLU 与 BBH 复杂推理基准上比全局余弦打分（ShortGPT）提升 **`+4.3%`**。
@@ -533,22 +573,29 @@
 ```
 
 #### 🎯 背景与痛点 (Background & Pain Points)
-* **循环复用的“相干方差爆炸（Coherent Variance Explosion）”**：在标准非循环 Transformer（如 DeepNorm / Pre-LN）中，由于各层权重 $W^{(l)}$ 相互独立，层间残差增量的交叉协方差近似为零，因此 $L$ 层后的隐状态方差按随机游走以 $O(L)$ 线性增长（仅需 $1/\sqrt{L}$ 缩放）。然而在 **Looped Transformer** 中，同一物理层 $f_W$ 被连续迭代调用 $K$ 次，第 $k$ 步的残差增量 $f_W(h^{(k-1)})$ 与前一步高度正相关（相干叠加），导致隐状态范数以 **$O(K^2)$ 二次方速度爆炸**，使得循环步数 $K > 4$ 时训练迅速崩溃！
+* **循环复用的“相干方差爆炸（Coherent Variance Explosion）”**：在标准非循环 Transformer（如 DeepNorm / Pre-LN）中，由于各层权重 $W^{(l)}$ 相互独立，层间残差增量的交叉协方差近似为零，因此 $L$ 层后的隐状态方差按随机游走以 $O(L)$ 线性增长（仅需 $1/\sqrt{L}$ 缩放）。然而在 **Looped Transformer** 中，同一物理层 $f _ W$ 被连续迭代调用 $K$ 次，第 $k$ 步的残差增量 $f _ W(h^{(k-1)})$ 与前一步高度正相关（相干叠加），导致隐状态范数以 ** $O(K^2)$ 二次方速度爆炸**，使得循环步数 $K > 4$ 时训练迅速崩溃！
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
 1. **相干循环残差方差增长定理（Coherent Residual Variance Theorem）**：
-   设循环块映射为 $h^{(k)} = h^{(k-1)} + \beta_k f_W(h^{(k-1)})$。令步间余弦相关系数为 $\rho_{j,k} = \frac{\mathbb{E}[\langle f_W(h^{(j)}), f_W(h^{(k)}) \rangle]}{\|f_W(h^{(j)})\|_2 \|f_W(h^{(k)})\|_2}$。当 $\rho_{j,k} \ge \bar{\rho} > 0$ 时，$K$ 步循环后的终端方差满足：
-   $$\mathbb{E}\big[\|h^{(K)} - h^{(0)}\|_2^2\big] = \sum_{k=1}^K \beta_k^2 \sigma_f^2 + 2 \sum_{1 \le j < k \le K} \beta_j \beta_k \rho_{j,k} \sigma_f^2 = \Theta\left( \Big(\sum_{k=1}^K \beta_k\Big)^2 \right)$$
+   设循环块映射为 $h^{(k)} = h^{(k-1)} + \beta _ k f _ W(h^{(k-1)})$ 。令步间余弦相关系数为 $\rho _ {j,k} = \frac{\mathbb{E}[\langle f _ W(h^{(j)}), f _ W(h^{(k)}) \rangle]}{\Vert f _ W(h^{(j)})\Vert _ 2 \Vert f _ W(h^{(k)})\Vert _ 2}$ 。当 $\rho _ {j,k} \ge \bar{\rho} > 0$ 时， $K$ 步循环后的终端方差满足：
+
+$$
+\mathbb{E}\big[\Vert h^{(K)} - h^{(0)}\Vert _ 2^2\big] = \sum _ {k=1}^K \beta _ k^2 \sigma _ f^2 + 2 \sum _ {1 \le j < k \le K} \beta _ j \beta _ k \rho _ {j,k} \sigma _ f^2 = \Theta\left( \Big(\sum _ {k=1}^K \beta _ k\Big)^2 \right)
+$$
+
 2. **DeepLoop 步间解耦缩放法则（Coherence-Compensated Scaling Law）**：
-   为保证无论循环深度 $K$ 如何扩展，终端隐状态流形半径始终保持 $\Theta(1)$ 李雅普诺夫有界，DeepLoop 引入经验相干指数 $\gamma(\bar{\rho}) = \frac{1}{2} + \frac{1}{2}\bar{\rho} \in [\frac{1}{2}, 1]$，设定第 $k$ 步残差门控缩放系数为：
-   $$\beta_k(K) = \frac{c_k}{K^{\gamma(\bar{\rho})}}, \qquad \text{with step-specific affine gain } \text{LN}_k(h) = \gamma_k \odot \frac{h - \mu}{\sigma} + b_k$$
+   为保证无论循环深度 $K$ 如何扩展，终端隐状态流形半径始终保持 $\Theta(1)$ 李雅普诺夫有界，DeepLoop 引入经验相干指数 $\gamma(\bar{\rho}) = \frac{1}{2} + \frac{1}{2}\bar{\rho} \in [\frac{1}{2}, 1]$ ，设定第 $k$ 步残差门控缩放系数为：
+
+$$
+\beta _ k(K) = \frac{c _ k}{K^{\gamma(\bar{\rho})}}, \qquad \text{with step-specific affine gain } \text{LN} _ k(h) = \gamma _ k \odot \frac{h - \mu}{\sigma} + b _ k
+$$
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
-* 在循环深度从 $K=2$ 扩展至 **$K=16$** 的语言与数学推理预训练中，标准 Pre-LN 循环架构在 $K \ge 6$ 时完全发散，而 **DeepLoop** 稳定收敛并实现随循环次数 $K$ 对数线性下降的测试集 Loss，以 **1/4 的物理参数量** 追平同有效深度标准 Transformer 的推理性能。
+* 在循环深度从 $K=2$ 扩展至 ** $K=16$ ** 的语言与数学推理预训练中，标准 Pre-LN 循环架构在 $K \ge 6$ 时完全发散，而 **DeepLoop** 稳定收敛并实现随循环次数 $K$ 对数线性下降的测试集 Loss，以 **1/4 的物理参数量** 追平同有效深度标准 Transformer 的推理性能。
 
 #### 🔗 与我们工作（Our Works）的直接关联与落地启发
 * **为我们 *Transformer-Geometry* (`arXiv:2609.15975`, EMNLP 2026) 与 `vla-loop`（定律 v18：Continuous Horizon-Phase Terminal Decay）提供精确的二阶统计力学解释！**
-  * DeepLoop 发现的“相干叠加 $\rho_{j,k} > 0$ 导致 $O(K^2)$ 范数爆炸”，从几何上看正是因为共享权重 $f_W$ 在每次循环中持续向**平行径向分量 $\Delta h_\parallel$** 注入同向推力！这再次证明了我们在 `vla-loop` 与 *Transformer-Geometry* 中剔除平行分量、仅保留正交切空间更新 $\Delta h_\perp$（使 $\rho_{j,k}^{\parallel} \to 0$，从而将方差增长压回良性的 $O(K)$）并配合终端步长衰减 $(1-\tau_k)^\beta$ 的根本必要性。
+  * DeepLoop 发现的“相干叠加 $\rho _ {j,k} > 0$ 导致 $O(K^2)$ 范数爆炸”，从几何上看正是因为共享权重 $f _ W$ 在每次循环中持续向**平行径向分量 $\Delta h _ \parallel$ ** 注入同向推力！这再次证明了我们在 `vla-loop` 与 *Transformer-Geometry* 中剔除平行分量、仅保留正交切空间更新 $\Delta h _ \perp$ （使 $\rho _ {j,k}^{\parallel} \to 0$ ，从而将方差增长压回良性的 $O(K)$ ）并配合终端步长衰减 $\left(1-\tau _ k\right)^\beta$ 的根本必要性。
 
 ---
 
@@ -590,11 +637,19 @@
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
 1. **层内 Gather-Attention-Scatter 可逆稀疏算子**：
-   在第 $l$ 层，轻量路由器根据当前隐状态打分选出活跃下标集 $\mathcal{I}_l \subset \{1, \dots, L\}$（$|\mathcal{I}_l| = M = \rho L \ll L$）。通过行抽取算子 $P_{\mathcal{I}_l} \in \{0, 1\}^{M \times L}$ 构造紧凑子矩阵：
-   $$\tilde{Q} = P_{\mathcal{I}_l} Q, \quad \tilde{K} = P_{\mathcal{I}_l} K, \quad \tilde{V} = P_{\mathcal{I}_l} V \in \mathbb{R}^{M \times d}$$
-   在紧凑稠密张量上直接调用标准 FlashAttention-3 内核计算 $\tilde{O} = \text{FlashAttn}(\tilde{Q}, \tilde{K}, \tilde{V})$，随后通过转置散射算子 $P_{\mathcal{I}_l}^\top$ 还原回全序列残差流：
-   $$H^{(l+1)} = H^{(l)} + P_{\mathcal{I}_l}^\top \big( \tilde{O} W_O \big)$$
-   由于非活跃 Token $j \notin \mathcal{I}_l$ 通过恒等残差分支完整保留了其隐状态 $H_j^{(l)}$，它在第 $l+1$ 层可根据更新后的全局语义被重新选入 $\mathcal{I}_{l+1}$！
+   在第 $l$ 层，轻量路由器根据当前隐状态打分选出活跃下标集 $\mathcal{I} _ l \subset \lbrace1, \dots, L\rbrace$ （ $|\mathcal{I} _ l| = M = \rho L \ll L$ ）。通过行抽取算子 $P _ {\mathcal{I} _ l} \in \lbrace0, 1\rbrace^{M \times L}$ 构造紧凑子矩阵：
+
+$$
+\tilde{Q} = P _ {\mathcal{I} _ l} Q, \quad \tilde{K} = P _ {\mathcal{I} _ l} K, \quad \tilde{V} = P _ {\mathcal{I} _ l} V \in \mathbb{R}^{M \times d}
+$$
+
+   在紧凑稠密张量上直接调用标准 FlashAttention-3 内核计算 $\tilde{O} = \text{FlashAttn}(\tilde{Q}, \tilde{K}, \tilde{V})$ ，随后通过转置散射算子 $P _ {\mathcal{I} _ l}^\top$ 还原回全序列残差流：
+
+$$
+H^{(l+1)} = H^{(l)} + P _ {\mathcal{I} _ l}^\top \big( \tilde{O} W _ O \big)
+$$
+
+   由于非活跃 Token $j \notin \mathcal{I} _ l$ 通过恒等残差分支完整保留了其隐状态 $H _ j^{(l)}$ ，它在第 $l+1$ 层可根据更新后的全局语义被重新选入 $\mathcal{I} _ {l+1}$ ！
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
 * 在 64K–128K 多跳检索与大海捞针基准（RULER Multi-Hop Tracing）上，不可逆 Token 剪枝在 70% 稀疏度下准确率跌至 `31.2%`，而 **Token Sparse Attention** 保持了 **`88.4%`** 的高准确率，同时因完全复用稠密 FlashAttention 内核实现了 **2.6x** 真实注意力加速。
@@ -648,22 +703,29 @@
 ```
 
 #### 🎯 背景与痛点 (Background & Pain Points)
-* **层剪枝切口处的“流形断裂（Manifold Fracture）”**：当直接移除 Transformer 中的第 $l$ 至 $l+m$ 层时，第 $l-1$ 层的输出隐状态 $\tilde{h}^{(l-1)}$ 被直接送入原本期望接收 $h_{\text{orig}}^{(l+m)}$ 的第 $l+m+1$ 层。由于缺失了中间层的残差漂移与旋转，输入分布的一阶均值 $\mu$ 与二阶协方差矩阵 $\Sigma$ 发生剧烈跳变，导致紧随其后的注意力层 Q/K 点积失真并沿着深层指数级放大。
+* **层剪枝切口处的“流形断裂（Manifold Fracture）”**：当直接移除 Transformer 中的第 $l$ 至 $l+m$ 层时，第 $l-1$ 层的输出隐状态 $\tilde{h}^{(l-1)}$ 被直接送入原本期望接收 $h _ {\text{orig}}^{(l+m)}$ 的第 $l+m+1$ 层。由于缺失了中间层的残差漂移与旋转，输入分布的一阶均值 $\mu$ 与二阶协方差矩阵 $\Sigma$ 发生剧烈跳变，导致紧随其后的注意力层 Q/K 点积失真并沿着深层指数级放大。
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
 1. **剪枝切口处的最小二乘残差重构**：
-   设剪枝段输入隐状态矩阵为 $X = \tilde{H}^{(l-1)} \in \mathbb{R}^{N \times d}$，原始未剪枝模型在该切口输出的目标残差增量为 $\Delta Y = H_{\text{orig}}^{(l+m)} - \tilde{H}^{(l-1)} \in \mathbb{R}^{N \times d}$。SHIFT-LLM 在切口处插入一个低秩线性残差适配器（LRA）$W_{\text{LRA}} = U_r V_r^\top + \mathbf{1} b^\top$，通过带 Tikhonov 正则化的岭回归闭式求解全秩最优映射 $W^*$：
-   $$W^* = \arg\min_{W \in \mathbb{R}^{d \times d}} \big\| \Delta Y - (X - \bar{X}) W \big\|_F^2 + \lambda \| W \|_F^2 = \Big( \tilde{X}^\top \tilde{X} + \lambda I_d \Big)^{-1} \tilde{X}^\top \Delta \tilde{Y}$$
+   设剪枝段输入隐状态矩阵为 $X = \tilde{H}^{(l-1)} \in \mathbb{R}^{N \times d}$ ，原始未剪枝模型在该切口输出的目标残差增量为 $\Delta Y = H _ {\text{orig}}^{(l+m)} - \tilde{H}^{(l-1)} \in \mathbb{R}^{N \times d}$ 。SHIFT-LLM 在切口处插入一个低秩线性残差适配器（LRA） $W _ {\text{LRA}} = U _ r V _ r^\top + \mathbf{1} b^\top$ ，通过带 Tikhonov 正则化的岭回归闭式求解全秩最优映射 $W^\star$ ：
+
+$$
+W^\star = \arg\min _ {W \in \mathbb{R}^{d \times d}} \big\Vert \Delta Y - (X - \bar{X}) W \big\Vert _ F^2 + \lambda \Vert W \Vert _ F^2 = \Big( \tilde{X}^\top \tilde{X} + \lambda I _ d \Big)^{-1} \tilde{X}^\top \Delta \tilde{Y}
+$$
+
 2. **激活协方差加权奇异值截断（Covariance-Weighted Truncated SVD）**：
    为保证适配器自身的计算开销可忽略（或直接折叠进下一层权重），对预测输出空間执行白化 SVD 分解：
-   $$\tilde{X} W^* = \hat{U} \hat{\Sigma} \hat{V}^\top \implies U_r = (\tilde{X}^\top \tilde{X} + \lambda I_d)^{-1/2} \hat{U}_{:, 1:r} \hat{\Sigma}_{1:r}^{1/2}, \quad V_r = \hat{V}_{:, 1:r} \hat{\Sigma}_{1:r}^{1/2}$$
+
+$$
+\tilde{X} W^\star = \hat{U} \hat{\Sigma} \hat{V}^\top \implies U _ r = (\tilde{X}^\top \tilde{X} + \lambda I _ d)^{-1/2} \hat{U} _ {:, 1:r} \hat{\Sigma} _ {1:r}^{1/2}, \quad V _ r = \hat{V} _ {:, 1:r} \hat{\Sigma} _ {1:r}^{1/2}
+$$
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
 * 在 **Llama-3-8B/70B** 与 **Qwen-2.5-14B** 上剪除 **25%–35% 的层**后，无需任何梯度下降微调（仅需 30 秒闭式矩阵求逆），SHIFT-LLM 将 WikiText2 困惑度（PPL）从 `28.4` 恢复至 **`9.1`**，零样本常识与数学推理平均精度恢复 **`+7.9%`**。
 
 #### 🔗 与我们工作（Our Works）的直接关联与落地启发
 * **与我们 `modellesion-compression-scaffold`、`vla-dtr` (Ortho-MerA) 及 *Layer Dropping* (TMLR 2025) 的直接印证**：
-  * SHIFT-LLM 的闭式岭回归校正算子 $W^* = (\tilde{X}^\top \tilde{X} + \lambda I)^{-1} \tilde{X}^\top \Delta \tilde{Y}$ 与我们在 `modellesion-compression-scaffold` 中使用的 **Depth SVD-LoRA / Woodbury KKT 闭式残差补偿** 数学形式完全一致！更进一步，结合我们的 `vla-dtr`（Ortho-MerA），我们只需对正交切空间残差 $\Delta Y_\perp = \Delta Y \cdot P_\perp(X)$ 进行低秩 SVD 拟合，而将平行分量 $\Delta Y_\parallel$ 简化为标量增益 $\alpha \in \mathbb{R}$，即可用一半的秩恢复更高的几何保真度。
+  * SHIFT-LLM 的闭式岭回归校正算子 $W^\star = (\tilde{X}^\top \tilde{X} + \lambda I)^{-1} \tilde{X}^\top \Delta \tilde{Y}$ 与我们在 `modellesion-compression-scaffold` 中使用的 **Depth SVD-LoRA / Woodbury KKT 闭式残差补偿** 数学形式完全一致！更进一步，结合我们的 `vla-dtr`（Ortho-MerA），我们只需对正交切空间残差 $\Delta Y _ \perp = \Delta Y \cdot P _ \perp(X)$ 进行低秩 SVD 拟合，而将平行分量 $\Delta Y _ \parallel$ 简化为标量增益 $\alpha \in \mathbb{R}$ ，即可用一半的秩恢复更高的几何保真度。
 
 ---
 
@@ -715,18 +777,22 @@
 
 #### 💡 核心方法与数学公式 (Core Methodology & Math)
 1. **无激活等效残差映射提取**：
-   对于第 $l$ 层 Transformer 块，将其对残差流 $h^{(l-1)}$ 的线性主轴作用表征为注意力值-输出合成矩阵 $M_{\text{attn}}^{(l)} = W_O^{(l)} W_V^{(l)} \in \mathbb{R}^{d \times d}$ 与前馈网络合成算子 $M_{\text{ffn}}^{(l)} = W_{\text{down}}^{(l)} (W_{\text{up}}^{(l)} \odot \bar{\sigma}_{\text{gate}}) \in \mathbb{R}^{d \times d}$。
+   对于第 $l$ 层 Transformer 块，将其对残差流 $h^{(l-1)}$ 的线性主轴作用表征为注意力值-输出合成矩阵 $M _ {\text{attn}}^{(l)} = W _ O^{(l)} W _ V^{(l)} \in \mathbb{R}^{d \times d}$ 与前馈网络合成算子 $M _ {\text{ffn}}^{(l)} = W _ {\text{down}}^{(l)} (W _ {\text{up}}^{(l)} \odot \bar{\sigma} _ {\text{gate}}) \in \mathbb{R}^{d \times d}$ 。
 2. **层内有效秩赤字与层间子空间投影重叠度**：
-   对合成算子执行奇异值分解 $M^{(l)} = U^{(l)} \Sigma^{(l)} V^{(l)\top}$，定义归一化奇异值分布 $p_i^{(l)} = \frac{\sigma_i^{(l)}}{\sum_j \sigma_j^{(l)}}$。层的权重综合冗余度得分 $\mathcal{S}_{\text{WRP}}(l)$ 由**层内谱坍缩度**与**相对于前序累积子空间的投影冗余度**共同决定：
-   $$\mathcal{S}_{\text{WRP}}(l) = \underbrace{\left( 1 - \frac{\exp\big(-\sum_{i=1}^d p_i^{(l)} \log p_i^{(l)}\big)}{d} \right)}_{\text{Intra-Layer Spectral Redundancy}} + \lambda \underbrace{\frac{\big\| P_{\text{span}(1:l-1)} U_{:, 1:r}^{(l)} \big\|_F^2}{r}}_{\text{Inter-Layer Subspace Overlap}}$$
-   其中 $P_{\text{span}(1:l-1)}$ 为前 $l-1$ 层输出主奇异子空间的正交投影算子。若第 $l$ 层的输出主奇异方向几乎完全落在前序层已经张成的子空间内（即缺乏新的正交特征扩展），则该层被判定为高度冗余。
+   对合成算子执行奇异值分解 $M^{(l)} = U^{(l)} \Sigma^{(l)} V^{(l)\top}$ ，定义归一化奇异值分布 $p _ i^{(l)} = \frac{\sigma _ i^{(l)}}{\sum _ j \sigma _ j^{(l)}}$ 。层的权重综合冗余度得分 $\mathcal{S} _ {\text{WRP}}(l)$ 由**层内谱坍缩度**与**相对于前序累积子空间的投影冗余度**共同决定：
+
+$$
+\mathcal{S} _ {\text{WRP}}(l) = \underbrace{\left( 1 - \frac{\exp\big(-\sum _ {i=1}^d p _ i^{(l)} \log p _ i^{(l)}\big)}{d} \right)} _ {\text{Intra-Layer Spectral Redundancy}} + \lambda \underbrace{\frac{\big\Vert P _ {\text{span}(1:l-1)} U _ {:, 1:r}^{(l)} \big\Vert _ F^2}{r}} _ {\text{Inter-Layer Subspace Overlap}}
+$$
+
+   其中 $P _ {\text{span}(1:l-1)}$ 为前 $l-1$ 层输出主奇异子空间的正交投影算子。若第 $l$ 层的输出主奇异方向几乎完全落在前序层已经张成的子空间内（即缺乏新的正交特征扩展），则该层被判定为高度冗余。
 
 #### 📊 关键实验与结论 (Key Experiments & Takeaways)
 * **秒级零样本层裁剪且跨领域泛化更强**：在 **Llama-3-8B/70B**、**Qwen-2.5-14B** 与 **Mistral-7B** 上，WRP 在完全不运行任何前向传播（耗时不足 8 秒）的情况下剪除 **20%–25% 的层**，在 GSM8K 与 HumanEval 等对校准集敏感的生成任务上比 ShortGPT 和 SLEB 高出 **`+3.4%` 至 `+6.1%`**。
 
 #### 🔗 与我们工作（Our Works）的直接关联与落地启发
 * **与 *Layer Dropping* (TMLR 2025)、*Demystifying When Pruning Works via Representation Hierarchies* (ICML 2026) 及 *Transformer-Geometry* (`arXiv:2609.15975`, EMNLP 2026) 的深度呼应**：
-  * WRP 的第二项 $\big\| P_{\text{span}(1:l-1)} U_{:, 1:r}^{(l)} \big\|_F^2$ 在权重空间精确刻画了我们在 *Transformer-Geometry* 中定义的**平行分量与正交分量之比**——当层权重输出子空间与前序累积子空间高度重合时，该层仅产生平行特征放大而缺乏正交旋转增量！我们可以将 WRP 的纯权重谱重叠指标与单批次激活几何探针结合，作为 `vla-dtr`（VLADrop）的快速层筛选先验。
+  * WRP 的第二项 $\big\Vert P _ {\text{span}(1:l-1)} U _ {:, 1:r}^{(l)} \big\Vert _ F^2$ 在权重空间精确刻画了我们在 *Transformer-Geometry* 中定义的**平行分量与正交分量之比**——当层权重输出子空间与前序累积子空间高度重合时，该层仅产生平行特征放大而缺乏正交旋转增量！我们可以将 WRP 的纯权重谱重叠指标与单批次激活几何探针结合，作为 `vla-dtr`（VLADrop）的快速层筛选先验。
 
 ---
 
@@ -754,10 +820,14 @@
 
 #### 💡 核心方法与原文底层数学实现 (Mathematical Formulations)
 1. **多模态局部几何锚点矩阵 (Multimodal Geometric Anchors)**：
-   - 在第 $l$ 层提取多模态激活流形 $\mathcal{M}_l$ 上的代表性锚点子集 $\mathcal{A}_l = \{a_1, a_2, \dots, a_K\} \subset \mathbb{R}^{d}$；
-   - 求解局部切空间的主成分基底，定义层级几何表征流形失真度指标 $\mathcal{D}_l$：
-     $$\mathcal{D}_l \triangleq \frac{1}{K} \sum_{k=1}^K \left\| a_k - \Pi_{\mathcal{A}_{l-1}}(a_k) \right\|_2^2$$
-   - 当 $\mathcal{D}_l < \tau_{\text{layer}}$ 时，判定该层为表征阶梯中的平坦饱和层，可安全丢弃。
+   - 在第 $l$ 层提取多模态激活流形 $\mathcal{M} _ l$ 上的代表性锚点子集 $\mathcal{A} _ l = \lbrace a _ 1, a _ 2, \dots, a _ K\rbrace \subset \mathbb{R}^{d}$ ；
+   - 求解局部切空间的主成分基底，定义层级几何表征流形失真度指标 $\mathcal{D} _ l$ ：
+
+$$
+\mathcal{D} _ l \triangleq \frac{1}{K} \sum _ {k=1}^K \left\lVert a _ k - \Pi _ {\mathcal{A} _ {l-1}}(a _ k) \right\rVert _ 2^2
+$$
+
+   - 当 $\mathcal{D} _ l < \tau _ {\text{layer}}$ 时，判定该层为表征阶梯中的平坦饱和层，可安全丢弃。
 2. **锚点引导的动态 Token 稀疏过滤 (Anchor-Guided Token Sparsification)**：
    - 仅保留与核心几何锚点内积相似度大于动态阈值的 Token，在浅层过滤掉 50% 以上的无用背景 Patch，同时维持深层关键语义边界。
 
@@ -774,7 +844,7 @@
   * 我们在 *ICML 26* 与 *TMLR 25* 中奠定了从“表征层级阶梯（Representation Hierarchies）”解释剪枝机理的理论基石；
   * *AnchorPrune* 将我们的层级冗余理论推进到了“层丢弃（Layer Dropping）与 Token 动态稀疏（Token Sparsity）的二维联合优化”，提供了具体的几何锚点判据；
 * **💡 下一阶段研究（Next Research Directions）落地启发**：
-  * 可直接将锚点流形失真度 $\mathcal{D}_l$ 集成至我们的多模态轻量化评估脚本中，作为我们后续多模态稀疏化大模型训练的正则化损失函数。
+  * 可直接将锚点流形失真度 $\mathcal{D} _ l$ 集成至我们的多模态轻量化评估脚本中，作为我们后续多模态稀疏化大模型训练的正则化损失函数。
 
 ---
 
