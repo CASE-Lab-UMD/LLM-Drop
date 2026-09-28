@@ -1,10 +1,10 @@
 # ✂️ LLM-Drop (Layer & Attention Dropping): 每日前沿文献关联与深度/注意力层剪枝落地库 (2026-09)
 
-**Document ID:** `LLMDROP-LIT-202609` | **Last Updated:** `2026-09-27` | **Target Path:** `docs/frontier_literature_connections_2026_09.md` | **Total Routed Papers:** `14`
+**Document ID:** `LLMDROP-LIT-202609` | **Last Updated:** `2026-09-28` | **Target Path:** `docs/frontier_literature_connections_2026_09.md` | **Total Routed Papers:** `16`
 
 > [!IMPORTANT]
 > **🔗 跨仓库文献引用链闭环 (Cross-Repository Reference Chain Closure)**
-> 本文件由每日 AI 前沿论文精读流水线自动路由生成，专门收录与我们 **TMLR 2025/2026 代表作 (*What Matters in Transformers? Not All Attention is Needed*, `CASE-Lab-UMD/LLM-Drop`)** 直接关联的层剪枝（Layer Dropping）、Attention vs FFN 异构子层剪枝（`HetDPT`）、剪枝后置信度校准（`How Pruning Attention Layers Hurts Calibration`）、层剪枝推理跳数理论下界（`On the Limits of Layer Pruning`）与闭式切口残差恢复（`SHIFT-LLM`, `WRP`, `LoRP`）最新 arXiv 论文笔记。
+> 本文件由每日 AI 前沿论文精读流水线自动路由生成，专门收录与我们 **TMLR 2025/2026 代表作 (*What Matters in Transformers? Not All Attention is Needed*, `CASE-Lab-UMD/LLM-Drop`)** 直接关联的层剪枝（Layer Dropping）、Attention vs FFN 异构子层剪枝（`HetDPT`）、剪枝后置信度校准（`How Pruning Attention Layers Hurts Calibration`）、层剪枝推理跳数理论下界（`On the Limits of Layer Pruning`）与闭式切口残差恢复（`SHIFT-LLM`, `WRP`, `LoRP`, `ASL`）最新 arXiv 论文笔记。
 > 每一篇收录文献均包含：**核心痛点、底层数学公式、ASCII 架构图、关键实测指标**，以及**与 `LLM-Drop` 仓库具体代码模块和我们已发表代表作（Our Works）的双向锚定**。
 
 ---
@@ -13,6 +13,8 @@
 
 | 收录日期 | 论文标题与 arXiv 链接 | 关键实测收益 / 核心结论 | 锚定本仓库代码模块与文档路径 (`Target Module`) | 原始精读归档 |
 | :---: | :--- | :--- | :--- | :---: |
+| `2026-09-28` | [**✂️ CLSE**](https://arxiv.org/abs/2606.24165) (`arXiv:2606.24165`) | 在 LLaVA-NeXT-7B/13B 与 Qwen2.5-VL-7B 上，免训练剪除 **75% 视觉 Token** 时，在 DocVQA、ChartQA、TextVQA 与 Video-MME 等 10 项多模态基准上平均保... | `src/compress.py` (Spectral Entropy Derivative Inflection Point Detection) | [2026-09-28](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-28_ai_paper_notes.md) |
+| `2026-09-28` | [**✂️ ASL**](https://arxiv.org/abs/2601.07667) (`arXiv:2601.07667`) | 在 Llama-3.1-8B/70B 与 Qwen2.5-14B 上，针对 RULER、InfiniteBench 与 Needle-in-a-Haystack（128K 上下文）评测表明：在相同的... | `src/compress.py` (Adaptive Layer Selection via Marginal Information Gain Saturation) | [2026-09-28](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-28_ai_paper_notes.md) |
 | `2026-09-26` | [**🤖 VLA-Pruner**](https://arxiv.org/abs/2511.16449) (`arXiv:2511.16449`) | 在 OpenVLA 与主流机器人操控基准（LIBERO-Spatial / Object / Goal / Long）上，剔除 **50%–75% 视觉 Token** 仍保持与全量 Token 持平的任务成功率，端到端控制频率显... | `src/compress.py` (Hybrid Layer-Drop + Mid-Block Looping) | [2026-09-26](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-26_ai_paper_notes.md) |
 | `2026-09-25` | [**Fully Looped Transformer**](https://arxiv.org/abs/2605.18797) (`arXiv:2605.18797`) | 在完全不增加任何额外参数（0 Extra Parameters）的条件下，Fully Looped Transformer 在 $K=8, 12$ 步循环预训练中完全消除了传统 Looped Transformer 的梯度尖峰（G... | `src/compress.py` (Hybrid Layer-Drop + Mid-Block Looping) | [2026-09-25](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-25_ai_paper_notes.md) |
 | `2026-09-25` | [**On the Limits of Layer Pruning in Genera**](https://arxiv.org/abs/2602.01997) (`arXiv:2602.01997`) | 实验精确测定了 Llama-3-8B/70B 与 Qwen-2.5 在不同推理跳数 $m \in \lbrace2, 3, 4, 5\rbrace$ 下的临界剩余层数 $L _ {\text{crit}}(m)$ ，并证明当物理层... | `src/compress.py` (Multi-Hop Reasoning Depth Lower Bound & Looped Compensation) | [2026-09-25](https://github.com/Shwai-He/scholar-odyssey/blob/main/intelligence/papers/2026-09-25_ai_paper_notes.md) |
@@ -32,7 +34,100 @@
 
 ## 📐 2. 逐篇论文深度机制解构、数学公式与本仓库落地指南 (Per-Paper Deep-Dive Cards)
 
-### 2.1 [2026-09-26] 🤖 *VLA-Pruner: Temporal-Aware Dual-Level Visual Token Pruning for Efficient Vision-Language-Action Inference*
+### 2.1 [2026-09-28] ✂️ *CLSE: Spectral Evolution-Guided Token Pruning in Multimodal Large Language Models*
+> 🏷️ **核心关键词**：Multimodal Token Pruning · Cross-Layer Spectral Evolution · Discrete Cosine Transform (DCT) · Training-Free Compression  
+> 🔗 **arXiv 链接**：[`arXiv:2606.24165`](https://arxiv.org/abs/2606.24165) (ECCV 2026)
+
+```
+  层 l-1 视觉隐状态 H^(l-1) ──► [ 通道维 DCT 频域投影 Φ ] ──► 频谱能量分布 P^(l-1)(ω) ┐
+                                                                                      ├──► [ 跨层谱演化散度 D_CLSE(i) ] ──► Top-K 语义活跃视觉 Token 保留
+  层 l   视觉隐状态 H^(l)   ──► [ 通道维 DCT 频域投影 Φ ] ──► 频谱能量分布 P^(l)(ω)   ┘
+```
+
+#### 🎯 背景与痛点 (Problem Statement)
+现有多模态大模型（MLLM / VLM）免训练视觉 Token 剪枝方法（如 FastV、SparseVLM）大多依赖**单层静态注意力分数**（如第 $l$ 层文本对视觉 Token 的注意力权重 $A _ {t, v}^{(l)}$ ）。然而，由于 RoPE 旋转位置编码的远程衰减与视觉 Sink Token 现象，单层注意力极易受到空间位置偏置（Position Bias）误导——许多在当前层注意力得分较高但跨层表征几乎停止更新的“静态背景/锚点冗余 Token”被错误保留，而真正正在经历高频语义整合的关键局部视觉 Token 却被过早裁剪。
+
+#### 💡 核心方法与数学公式 (Core Methodology & Formulation)
+* **跨层频域映射与归一化能量谱**：
+  设第 $l$ 层第 $i$ 个视觉 Token 的隐状态向量为 $h _ i^{(l)} \in \mathbb{R}^d$ 。CLSE 首先通过正交离散余弦变换（DCT）基矩阵 $\Phi \in \mathbb{R}^{d \times d}$ 将特征变化量 $\Delta h _ i^{(l)} = h _ i^{(l)} - h _ i^{(l-1)}$ 投影至频域，计算频谱系数 $c _ i^{(l)} = \Phi h _ i^{(l)}$ ，并构造归一化频域能量分布：
+
+$$
+p _ {i, k}^{(l)} = \frac{\left( c _ {i, k}^{(l)} \right)^2}{\sum _ {m=1}^{d} \left( c _ {i, m}^{(l)} \right)^2 + \epsilon}, \quad k \in \lbrace 1, \dots, d \rbrace
+$$
+
+* **跨层谱演化散度（Cross-Layer Spectral Evolution Score）**：
+  原文发现：真正参与跨模态语义推理的视觉 Token 在穿越浅层到中层 Transformer 时，其能量会从高频局部纹理分量向低频全局语义分量发生剧烈的**谱重分布（Spectral Redistribution）**；而背景冗余 Token 的频谱分布则保持停滞。因此定义第 $i$ 个视觉 Token 在第 $l$ 层的跨层谱演化显著性打分为对称 Jensen-Shannon 谱演化散度与残差平行演化幅度的乘积：
+
+$$
+\mathcal{S} _ {\text{CLSE}}^{(l)}(i) = \mathrm{JSD}\left( p _ i^{(l)} \parallel p _ i^{(l-1)} \right) \cdot \frac{\lVert h _ i^{(l)} - h _ i^{(l-1)} \rVert _ 2}{\lVert h _ i^{(l-1)} \rVert _ 2 + \epsilon}
+$$
+
+* **谱演化引导渐进剪枝**：
+  在预设的剪枝过渡层 $l \in \mathcal{L} _ {\text{prune}}$ ，仅保留 $\mathcal{S} _ {\text{CLSE}}^{(l)}(i)$ 排名前 $K _ l$ 的语义活跃 Token，被裁剪的背景 Token 按频谱相似度加权合并至最近邻保留 Token 中以守恒低频能量。
+
+#### 📊 关键实验与结论 (Key Results & Conclusions)
+* 在 LLaVA-NeXT-7B/13B 与 Qwen2.5-VL-7B 上，免训练剪除 **75% 视觉 Token** 时，在 DocVQA、ChartQA、TextVQA 与 Video-MME 等 10 项多模态基准上平均保留了 **99.1%** 的原始全量精度，显著超越单层注意力剪枝基线（+3.8%），预填充（Prefill）FLOPs 降低 **68%**。
+
+#### 🔗 与我们工作（Our Works）的直接关联与落地启发 (Connection to Our Works)
+* **锚定我们的代表作**：直接呼应我们在 ***Understanding and Harnessing Sparsity for Unified Multimodal Models***（`TMLR 2026`, `SparseUnifiedModel`）、***Demystifying When Pruning Works via Representation Hierarchies***（`ICML 2026`, `Pruning-on-Representations`）以及 ***Transformer-Geometry***（`EMNLP 2026`, `arXiv:2609.15975`）中提出的跨层表征几何演化理论。
+* **落地到 `VLADrop` (`VLM-Compression`) 与 `efficient_ads` (`HisTrim`)**：在我们的 `VLADrop` 具身视觉编码器与 `HisTrim` 多阶段分层序列裁剪中，可将单层注意力打分升级为 **跨层平行/正交残差演化率 + 频域谱重分布散度 $\mathcal{S} _ {\text{CLSE}}^{(l)}$ **，用零额外参数的逐层残差差分替代易受位置偏置干扰的静态注意力权重。
+
+---
+
+> [!TIP]
+> **🎯 `LLM-Drop` 仓库代码级落地点 (`Target Module`)**：`src/compress.py` (Spectral Entropy Derivative Inflection Point Detection)  
+> **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-09-28_ai_paper_notes.md`
+
+
+---
+
+### 2.2 [2026-09-28] ✂️ *ASL: Adaptive Layer Selection for Layer-Wise Token Pruning in LLM Inference*
+> 🏷️ **核心关键词**：Layer-Wise Token Pruning · Adaptive Layer Selection · Attention Variance · Long-Context LLM Inference  
+> 🔗 **arXiv 链接**：[`arXiv:2601.07667`](https://arxiv.org/abs/2601.07667) (ACL 2026 Findings)
+
+```
+  输入长序列 X ──► 逐层前向传播 l=1..L ──► 实时监测注意力熵变与表征漂移率 η_l
+                                                    │
+                        ┌───────────────────────────┴───────────────────────────┐
+                        ▼ (η_l 跌破相变阈值 τ: 语义路由已收敛)                     ▼ (η_l > τ: 仍在剧烈跨位置交互)
+          [ 触发 ASL 单次 Token 剪枝 (One-Shot Selection) ]                [ 保持全长序列继续前向传播 ]
+```
+
+#### 🎯 背景与痛点 (Problem Statement)
+现有的长上下文逐层 Token 剪枝方法（如 PyramidInfer、LazyLLM）通常采用**跨样本固定的剪枝层配置**（例如硬编码在第 4、8、16 层按固定比例裁剪 Token）。然而，不同复杂度与不同上下文长度的输入样本，其跨位置信息汇聚的完成深度截然不同：简单检索任务在第 6 层已完成关键信息聚焦，而多跳推理任务直到第 18 层仍在跨段落聚合线索。静态固定剪枝层要么在困难样本上过早剪断推理链，要么在简单样本上浪费大量冗余计算。
+
+#### 💡 核心方法与数学公式 (Core Methodology & Formulation)
+* **跨层注意力方差与路由收敛度度量**：
+  设第 $l$ 层查询窗口对上下文 Token 的平均注意力分布为 $\bar{\alpha}^{(l)} \in \Delta^{N-1}$ 。ASL 提出用注意力分布的**二阶方差锐度（Attention Variance Sharpness）**与相邻层注意力分布的 **余弦收敛度** 联合度量当前层是否已完成信息路由聚焦：
+
+$$
+\mathcal{C} _ l = \mathrm{Var}\left( \bar{\alpha}^{(l)} \right) \cdot \frac{\left\langle \bar{\alpha}^{(l)}, \bar{\alpha}^{(l-1)} \right\rangle}{\lVert \bar{\alpha}^{(l)} \rVert _ 2 \lVert \bar{\alpha}^{(l-1)} \rVert _ 2 + \epsilon}
+$$
+
+* **自适应剪枝层触发准则（Adaptive Layer Selection）**：
+  当第 $l$ 层的聚焦收敛指数 $\mathcal{C} _ l$ 首次超过样本自适应阈值 $\tau _ {\text{ASL}}$ 且层间相对增幅趋于平缓（即 $\lvert \mathcal{C} _ l - \mathcal{C} _ {l-1} \rvert \le \delta$ ）时，ASL 判定该样本在层 $l^{\star}$ 已越过“信息收集—语义提纯相变点”，随即在层 $l^{\star}$ 触发 **One-Shot Token Selection**，一次性保留核心上下文子集 $\mathcal{I} _ {\text{keep}}$ ：
+
+$$
+l^{\star}(x) = \min \left\lbrace l \in \lbrace l _ {\min}, \dots, L \rbrace \middle| \mathcal{C} _ l(x) \ge \tau _ {\text{ASL}} \land \lvert \mathcal{C} _ l(x) - \mathcal{C} _ {l-1}(x) \rvert \le \delta \right\rbrace
+$$
+
+#### 📊 关键实验与结论 (Key Results & Conclusions)
+* 在 Llama-3.1-8B/70B 与 Qwen2.5-14B 上，针对 RULER、InfiniteBench 与 Needle-in-a-Haystack（128K 上下文）评测表明：在相同的 **2.4× 端到端推理加速比**下，ASL 比固定层级剪枝基线在多跳问答与长程聚合任务上平均提升 **+4.6 分**，彻底消除了静态早剪导致的“大海捞针丢失”现象。
+
+#### 🔗 与我们工作（Our Works）的直接关联与落地启发 (Connection to Our Works)
+* **锚定我们的代表作**：与我们在 ***Uncovering the Redundancy in Transformers via Layer Dropping***（`TMLR 2025`, `LLM-Drop`）、***Router-Tuning: A Simple and Effective Approach for Enabling Dynamic-Depth in Transformers***（`EMNLP 2025`, `Router-Tuning-Mixture-of-Depths`）以及 ***Demystifying When Pruning Works via Representation Hierarchies***（`ICML 2026`, `Pruning-on-Representations`）中揭示的“语义表征相变层（Phase-Transition Layer）”高度吻合。
+* **落地到 `LLM-Drop`、`ModelLesion` 与 `efficient_ads`**：可将 ASL 的样本级在线收敛准则 $\mathcal{C} _ l(x)$ 引入 `efficient_ads` 的 `HisTrim` 多阶段裁剪触发器以及 `LLM-Drop` 的动态跳过门控中，实现**按样本难度自适应推迟或提前剪枝触发层 $l^{\star}(x)$ **。
+
+---
+
+> [!TIP]
+> **🎯 `LLM-Drop` 仓库代码级落地点 (`Target Module`)**：`src/compress.py` (Adaptive Layer Selection via Marginal Information Gain Saturation)  
+> **📚 上游精读归档 (`Upstream Source`)**：`scholar-odyssey/intelligence/papers/2026-09-28_ai_paper_notes.md`
+
+
+---
+
+### 2.3 [2026-09-26] 🤖 *VLA-Pruner: Temporal-Aware Dual-Level Visual Token Pruning for Efficient Vision-Language-Action Inference*
 > **聚焦领域**：Vision-Language-Action (VLA) · Embodied AI · Visual Token Pruning · Temporal Consistency  
 > **arXiv**：[`arXiv:2511.16449`](https://arxiv.org/abs/2511.16449)
 
@@ -88,7 +183,7 @@ $$
 
 ---
 
-### 2.2 [2026-09-25] Fully Looped Transformer: Stabilizing Looped Models via Attention Injection and Residual Scaling
+### 2.4 [2026-09-25] Fully Looped Transformer: Stabilizing Looped Models via Attention Injection and Residual Scaling
 
 * **论文信息**：`arXiv:2605.18797` (2026-05)
 * **核心关键词**：Fully Looped Transformer、Attention Injection、Anchor KV Grounding、Gradient Oscillation Prevention
@@ -154,7 +249,7 @@ $$
 
 ---
 
-### 2.3 [2026-09-25] On the Limits of Layer Pruning in Generative Reasoning LLMs
+### 2.5 [2026-09-25] On the Limits of Layer Pruning in Generative Reasoning LLMs
 
 * **论文信息**：`arXiv:2602.01997` (2026-02)
 * **核心关键词**：Limits of Layer Pruning、Sequential Circuit Depth、Multi-Step Arithmetic & Logic Degradation
@@ -207,7 +302,7 @@ $$
 
 ---
 
-### 2.4 [2026-09-25] How Pruning Attention Layers Affects Interpretability, Faithfulness, and Confidence Calibration
+### 2.6 [2026-09-25] How Pruning Attention Layers Affects Interpretability, Faithfulness, and Confidence Calibration
 
 * **论文信息**：`arXiv:2606.24970` (2026-06)
 * **核心关键词**：Attention Layer Pruning、Confidence Calibration (ECE)、Faithfulness、Overconfident Hallucination
@@ -269,7 +364,7 @@ $$
 
 ---
 
-### 2.5 [2026-09-24] Training-Free Looped Transformers: Test-Time Mid-Stack Layer Looping
+### 2.7 [2026-09-24] Training-Free Looped Transformers: Test-Time Mid-Stack Layer Looping
 
 * **论文信息**：`arXiv:2605.23872` (2026-05)
 * **核心关键词**：Training-Free Looped Transformer、Test-Time Depth Scaling、Mid-Stack Fixed-Point Iteration
@@ -323,7 +418,7 @@ $$
 
 ---
 
-### 2.6 [2026-09-24] Decision Representation Transitions in Pruning: Silent vs. Decisive Phases
+### 2.8 [2026-09-24] Decision Representation Transitions in Pruning: Silent vs. Decisive Phases
 
 * **论文信息**：`arXiv:2605.07271` (2026-05)
 * **核心关键词**：Decision Representation Phase Transition、Silent vs. Decisive Layers、Linear Probe Separability、Pruning Collapse Boundary
@@ -374,7 +469,7 @@ $$
 
 ---
 
-### 2.7 [2026-09-23] HetDPT: Rethinking Depth Pruning for Vision Transformers — A Heterogeneity-Aware Perspective
+### 2.9 [2026-09-23] HetDPT: Rethinking Depth Pruning for Vision Transformers — A Heterogeneity-Aware Perspective
 
 * **论文信息**：`arXiv:2607.03784` (2026-07)
 * **核心关键词**：Heterogeneity-Aware Depth Pruning、Decoupled MHSA/FFN Pruning、Vision Transformers
@@ -440,7 +535,7 @@ $$
 
 ---
 
-### 2.8 [2026-09-23] D-Cut: Adaptive Verification Depth Pruning for Batched Speculative Decoding
+### 2.10 [2026-09-23] D-Cut: Adaptive Verification Depth Pruning for Batched Speculative Decoding
 
 * **论文信息**：`arXiv:2607.14647` (2026-07)
 * **核心关键词**：Speculative Decoding、Verification Depth Pruning、Cross-Request Budget Allocation
@@ -486,7 +581,7 @@ $$
 
 ---
 
-### 2.9 [2026-09-22] LoRP: Locality-Aware Redundancy Pruning for LLM Depth Compression
+### 2.11 [2026-09-22] LoRP: Locality-Aware Redundancy Pruning for LLM Depth Compression
 
 * **论文信息**：`arXiv:2605.27786` (2026-05)
 * **核心关键词**：Locality-Aware Depth Pruning、Manifold Neighborhood Preservation、k-NN Graph Overlap、One-Shot Layer Pruning
@@ -544,7 +639,7 @@ $$
 
 ---
 
-### 2.10 [2026-09-21] DeepLoop: Depth Scaling for Looped Transformers
+### 2.12 [2026-09-21] DeepLoop: Depth Scaling for Looped Transformers
 
 * **论文信息**：`arXiv:2607.13491` (2026-07)
 * **核心关键词**：Looped Transformers、Residual-Scaling Problem、Coherent Variance Growth、Depth Scaling Law
@@ -606,7 +701,7 @@ $$
 
 ---
 
-### 2.11 [2026-09-21] Token Sparse Attention: Efficient Long-Context Inference with Interleaved Token Selection
+### 2.13 [2026-09-21] Token Sparse Attention: Efficient Long-Context Inference with Interleaved Token Selection
 
 * **论文信息**：`arXiv:2602.03216` (2026-02)
 * **核心关键词**：Token Sparse Attention、Interleaved Compress-Decompress、Reversible Token Selection、Dense Kernel Compatibility
@@ -671,7 +766,7 @@ $$
 
 ---
 
-### 2.12 [2026-09-20] SHIFT-LLM: Distribution Shift Correction in Depth-Pruned LLMs
+### 2.14 [2026-09-20] SHIFT-LLM: Distribution Shift Correction in Depth-Pruned LLMs
 
 * **论文信息**：`arXiv:2608.25068` (2026-08)
 * **核心关键词**：Depth Pruning、Distribution Shift Correction、Linear Residual Adapters (LRA)、Closed-Form Ridge Regression、Weight Folding
@@ -736,7 +831,7 @@ $$
 
 ---
 
-### 2.13 [2026-09-19] WRP: Forward-Free LLM Depth Pruning via Weight Redundancy
+### 2.15 [2026-09-19] WRP: Forward-Free LLM Depth Pruning via Weight Redundancy
 
 * **论文信息**：`arXiv:2609.09883` (2026-09)
 * **核心关键词**：Forward-Free Depth Pruning、Weight Redundancy、Spectral Subspace Alignment、Calibration-Free Layer Dropping
@@ -803,7 +898,7 @@ $$
 
 ---
 
-### 2.14 [2026-09-18] ✂️ *AnchorPrune: Geometry-Preserving Representation Hierarchy Compression for Multimodal Large Language Models*
+### 2.16 [2026-09-18] ✂️ *AnchorPrune: Geometry-Preserving Representation Hierarchy Compression for Multimodal Large Language Models*
 > **聚焦领域**：Multimodal Sparsity · Representation Hierarchies · Layer Dropping · Geometric Manifolds  
 > **arXiv**：[`arXiv:2609.08842`](https://arxiv.org/abs/2609.08842)
 
